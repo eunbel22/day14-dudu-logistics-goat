@@ -33,7 +33,7 @@
       --card: #ffffff;
       --border: #d7dde3;
       --text: #1c2733;
-      --muted: #3a4556;
+      --muted: #667485;
       --ok-bg: #eef7f0;
       --ok-border: #b9dfc2;
       --bad-bg: #fbeceb;
@@ -249,7 +249,7 @@
       background: #fff;
       font-size: 14px;
       font-weight: 600;
-      color: #1c2733;
+      color: var(--text);
       cursor: pointer;
       text-align: center;
     }
@@ -262,19 +262,6 @@
       background: var(--brand);
       border-color: var(--brand);
       color: #fff;
-    }
-
-    .chip[disabled] {
-      cursor: default;
-      opacity: 0.75;
-      background: var(--calc-bg);
-      border-color: var(--calc-border);
-    }
-
-    .chip[disabled].selected {
-      background: var(--brand);
-      color: #fff;
-      opacity: 1;
     }
 
     .chip.chip-sm {
@@ -320,8 +307,7 @@
     }
 
     input[type="text"],
-    input[type="number"],
-    select {
+    input[type="number"] {
       width: 100%;
       padding: 11px 12px;
       border: 1px solid var(--border);
@@ -329,12 +315,6 @@
       font-size: 15px;
       background: #fff;
       font-family: inherit;
-      color: var(--text);
-    }
-
-    select option {
-      color: var(--text);
-      background: var(--card);
     }
 
     .row2 {
@@ -434,7 +414,7 @@
     }
 
     .summary-row span:first-child {
-      color: #3a4556;
+      color: var(--muted);
     }
 
     .summary-row span:last-child {
@@ -442,7 +422,7 @@
     }
 
     .summary-empty {
-      color: #3a4556;
+      color: var(--muted);
       font-size: 12.5px;
     }
 
@@ -502,7 +482,7 @@
     }
 
     .calc-pending {
-      color: #3a4556;
+      color: var(--muted);
       font-size: 13px;
       padding: 34px 10px;
       text-align: center;
@@ -522,13 +502,13 @@
 
     .calc-step-title {
       font-weight: 700;
-      color: #1c2733;
+      color: var(--brand-dark);
       margin-bottom: 4px;
       font-size: 13px;
     }
 
     .calc-step-body {
-      color: #1c2733;
+      color: var(--text);
       line-height: 1.65;
     }
 
@@ -546,19 +526,11 @@
       color: var(--muted);
     }
 
-    .rate-table-wrapper {
-      overflow-x: auto;
-      border: 1px solid var(--calc-border);
-      border-radius: 10px;
-      background: #fff;
-    }
-
     table.rate-table {
       width: 100%;
       border-collapse: collapse;
       font-size: 11.5px;
       background: #fff;
-      min-width: 450px;
     }
 
     table.rate-table th,
@@ -566,7 +538,6 @@
       border: 1px solid var(--border);
       padding: 6px 5px;
       text-align: center;
-      color: #1c2733;
     }
 
     table.rate-table th {
@@ -636,7 +607,6 @@
       border: 1px solid var(--border);
       padding: 6px 5px;
       text-align: left;
-      color: #1c2733;
     }
 
     .list-panel th {
@@ -645,7 +615,7 @@
 
     .empty-row td {
       text-align: center;
-      color: #3a4556;
+      color: var(--muted);
       padding: 14px;
     }
 
@@ -665,18 +635,18 @@
       <div class="kbd-hint"><b>Tab</b> 다음 단계 &nbsp;/&nbsp; <b>Shift+Tab</b> 이전 단계</div>
     </div>
 
-    <div class="main-tabs" role="tablist">
+    <div class="main-tabs">
       <button type="button" class="main-tab-btn active" id="mainTabReceiveBtn"
-        onclick="setMainTab('receive')" role="tab" aria-selected="true" aria-controls="mainPanelReceive">접수하기</button>
-      <button type="button" class="main-tab-btn" id="mainTabListBtn" onclick="setMainTab('list')" role="tab" aria-selected="false" aria-controls="mainPanelList">접수 목록 <span
-          id="listCountBadge" aria-label="접수 내역 수"></span></button>
+        onclick="setMainTab('receive')">접수하기</button>
+      <button type="button" class="main-tab-btn" id="mainTabListBtn" onclick="setMainTab('list')">접수 목록 <span
+          id="listCountBadge"></span></button>
     </div>
 
     <div class="card-shell">
 
       <!-- ============ 접수하기 탭 ============ -->
-      <div id="mainPanelReceive" role="tabpanel">
-        <div class="step-tabs" id="stepTabs" role="tablist"></div>
+      <div id="mainPanelReceive">
+        <div class="step-tabs" id="stepTabs"></div>
 
         <div class="layout">
           <section class="form-panel">
@@ -747,12 +717,12 @@
                       oninput="recalc()">
                   </div>
                   <div>
-                    <div class="dim-label">무게(kg)</div><input type="number" id="weightKg" step="any" min="0" max="25"
+                    <div class="dim-label">무게(kg)</div><input type="number" id="weightKg" step="any" min="0" max="30"
                       oninput="recalc()">
                   </div>
                 </div>
               </div>
-              <p class="step-desc" style="margin-top:8px;">세 변의 합이 160cm 이하, 무게 25kg 이하까지 접수됩니다. 초과하면 대형화물 전문 창구(1600-5678)로 안내됩니다.
+              <p class="step-desc" style="margin-top:8px;">한 변당 최대 200cm, 무게 최대 30kg까지만 접수됩니다. 넘으면 대형화물 전문 창구로 안내됩니다.
               </p>
               <div class="inline-warning" id="dimsWarning"></div>
             </div>
@@ -792,31 +762,29 @@
             </div>
 
             <div class="btn-row">
-              <button type="button" class="nav-btn prev" id="prevBtn" onclick="goToStep(currentStep-1)" aria-label="이전 단계로 이동">이전</button>
-              <button type="button" class="nav-btn" id="nextBtn" onclick="goToStep(currentStep+1)" aria-label="다음 단계로 이동">다음</button>
+              <button type="button" class="nav-btn prev" id="prevBtn" onclick="goToStep(currentStep-1)">이전</button>
+              <button type="button" class="nav-btn" id="nextBtn" onclick="goToStep(currentStep+1)">다음</button>
               <div id="submitBtnGroup" style="display:flex; gap:8px;">
-                <button type="button" class="submit-btn" id="submitBtn" onclick="submitShipment()" hidden disabled aria-label="다음 접수">다음 접수 <span id="pendingCount" style="font-size:11px; opacity:.8;"></span></button>
-                <button type="button" class="submit-btn" id="completeBtn" onclick="completeAllShipments()" hidden style="background:var(--brand);" aria-label="모든 접수 완료">완료</button>
+                <button type="button" class="submit-btn" id="submitBtn" onclick="submitShipment()" hidden disabled>다음 접수 <span id="pendingCount" style="font-size:11px; opacity:.8;"></span></button>
+                <button type="button" class="submit-btn" id="completeBtn" onclick="completeAllShipments()" hidden style="background:var(--brand);">완료</button>
               </div>
             </div>
           </section>
 
           <section class="calc-panel">
             <h3 style="margin-top:0;">요금표 - 4등급 x 3권역 12종 전부 (규정 §3)</h3>
-            <div class="rate-table-wrapper">
-              <table class="rate-table" id="rateTable" role="table" aria-label="배송 등급별 요금표">
-                <thead>
-                  <tr>
-                    <th>등급</th>
-                    <th>기준(세변합 / 무게)</th>
-                    <th>일반</th>
-                    <th>제주</th>
-                    <th>도서산간</th>
-                  </tr>
-                </thead>
-                <tbody></tbody>
-              </table>
-            </div>
+            <table class="rate-table" id="rateTable">
+              <thead>
+                <tr>
+                  <th>등급</th>
+                  <th>기준(세변합 / 무게)</th>
+                  <th>일반</th>
+                  <th>제주</th>
+                  <th>도서산간</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
 
             <h2 style="margin-top:20px;">계산 과정 (규정 그대로, 숫자를 대입해서 보여줍니다)</h2>
             <div id="calcSteps">
@@ -829,10 +797,10 @@
       </div>
 
       <!-- ============ 접수 목록 탭 ============ -->
-      <div id="mainPanelList" hidden role="tabpanel">
+      <div id="mainPanelList" hidden>
         <div class="list-panel">
-          <h2 style="font-size:14px;color:var(--muted);margin:0 0 8px 2px;">📋 오늘 접수 목록 (브라우저 저장됨)</h2>
-          <table role="table" aria-label="오늘 접수한 택배 목록">
+          <h2 style="font-size:14px;color:var(--muted);margin:0 0 8px 2px;">오늘 접수 목록 (이 브라우저 세션에서만 유지)</h2>
+          <table>
             <thead>
               <tr>
                 <th>운송장</th>
@@ -863,7 +831,7 @@
 
   <script>
     // ============================================================
-    // 계산 정본 - 02_접수규정.md §1-9
+    // 계산 정본 - 02_접수규정.md §1-9. F판과 완전히 동일 (로직 변경 없음).
     // ============================================================
     const BRANCHES = [
       { code: '11', name: '서울지점' }, { code: '12', name: '용산지점' },
@@ -880,6 +848,13 @@
     const ETA_BUSINESS_DAYS = { 일반: 1, 제주: 2, 도서산간: 3 };
     const ISLAND_AREAS = ['울릉도', '백령도', '흑산도', '거문도', '추자도'];
     const NORMAL_AREAS = ['서울', '용산', '대전', '진주', '거제', '울산'];
+    // 접수 지점과 안 겹치는 그 외 표준 시/도 - receiver_area 칸 정책서 방침
+    // (자유 텍스트 대신 이 목록에서만 고르게 해서 표기 갈림을 원천 차단)
+    const OTHER_SIDO_AREAS = [
+      '인천광역시', '부산광역시', '대구광역시', '광주광역시', '세종특별자치시',
+      '경기도', '강원특별자치도', '충청북도', '충청남도',
+      '전북특별자치도', '전라남도', '경상북도', '경상남도',
+    ];
 
     const SIDO_SIGUNGU = {
       '서울': ['강남구', '강동구', '강북구', '강서구', '관악구', '광진구', '구로구', '금천구', '노원구', '도봉구', '동대문구', '동작구', '마포구', '서대문구', '서초구', '성동구', '성북구', '송파구', '양천구', '영등포구', '용산구', '은평구', '종로구', '중구', '중랑구'],
@@ -901,8 +876,12 @@
       '제주': ['제주시', '서귀포시'],
     };
 
+    // 자주 접수되는 물품 버튼 (모두 금지목록에 걸리지 않는 안전한 품목만
+    // 골랐다 - 규정 §5 21개 키워드와 겹치지 않는지 확인함).
     const COMMON_ITEMS = ['이불', '책', '화장품', '운동화', '쌀', '전자제품', '의류', '주방용품'];
 
+    // 규격 프리셋 - 등급 4종의 상한 근처가 아니라 "이 등급이 확실히
+    // 나오는" 중간값을 골랐다(세 변의 합・무게 둘 다 상한보다 여유있게).
     const SIZE_PRESETS = [
       { label: '극소형 (서류/화장품)', w: 20, h: 15, d: 10, weight: 1 },
       { label: '소형 (신발/책)', w: 30, h: 25, d: 15, weight: 3 },
@@ -978,8 +957,11 @@
       { category: '기타', keyword: '도검' },
     ];
 
-    const CS_PHONE = '1588-1234';
-    const BULKY_DESK_PHONE = '1600-5678';
+    // 정책서 4번(어디서 막나) - 금지품목/대형초과는 "기계적 차단 + 운영"
+    // 두 층을 같이 쓰라고 되어있다. 접수를 막는 것까지는 화면이 하고,
+    // 그 다음 사람이 받아야 하는 연결선(전화번호)을 메시지에 같이 넣는다.
+    const CS_PHONE = '1588-1234';          // 금지 품목 문의
+    const BULKY_DESK_PHONE = '1600-5678';  // 대형화물・특수 택배 전문 창구
     function checkBanned(name) {
       const s = (name || '').trim();
       if (!s) return { hardHits: [], softHits: [] };
@@ -1009,20 +991,20 @@
       return n;
     }
 
+    // ============================================================
+    // 선택 상태 (버튼 칩으로 고르는 값들은 hidden input 대신 state로 관리)
+    // ============================================================
     const state = { branch: '', itemName: '', receiverArea: '', pendingShipments: [] };
 
+    // ---------- 최상단 탭 (접수하기 / 접수 목록) ----------
     function setMainTab(which) {
-      const isReceive = which === 'receive';
-      document.getElementById('mainPanelReceive').hidden = !isReceive;
-      document.getElementById('mainPanelList').hidden = isReceive;
-      const receiveBtn = document.getElementById('mainTabReceiveBtn');
-      const listBtn = document.getElementById('mainTabListBtn');
-      receiveBtn.classList.toggle('active', isReceive);
-      listBtn.classList.toggle('active', !isReceive);
-      receiveBtn.setAttribute('aria-selected', isReceive ? 'true' : 'false');
-      listBtn.setAttribute('aria-selected', isReceive ? 'false' : 'true');
+      document.getElementById('mainPanelReceive').hidden = which !== 'receive';
+      document.getElementById('mainPanelList').hidden = which !== 'list';
+      document.getElementById('mainTabReceiveBtn').classList.toggle('active', which === 'receive');
+      document.getElementById('mainTabListBtn').classList.toggle('active', which === 'list');
     }
 
+    // ---------- 단계(스텝) 정의 ----------
     const STEPS = [
       { label: '지점' }, { label: '정보' }, { label: '물품' }, { label: '크기/무게' }, { label: '도착지' }, { label: '확인' },
     ];
@@ -1032,12 +1014,10 @@
       const el = document.getElementById('stepTabs');
       el.innerHTML = STEPS.map((s, i) => {
         const cls = ['step-tab'];
-        const isActive = i === currentStep;
-        const isDone = i < currentStep;
-        if (isActive) cls.push('active');
-        else if (isDone) cls.push('done');
-        return `<button type="button" class="${cls.join(' ')}" onclick="goToStep(${i})" role="tab" aria-selected="${isActive}" aria-label="${s.label}${isDone ? ' 완료' : isActive ? ' 진행중' : ''}">
-        <span class="num" aria-hidden="true">${i + 1}</span>${s.label}
+        if (i === currentStep) cls.push('active');
+        else if (i < currentStep) cls.push('done');
+        return `<button type="button" class="${cls.join(' ')}" onclick="goToStep(${i})">
+        <span class="num">${i + 1}</span>${s.label}
       </button>`;
       }).join('');
     }
@@ -1058,6 +1038,7 @@
       recalc();
     }
 
+    // Tab 키 = 다음 단계, Shift+Tab = 이전 단계 (요청사항 3번)
     document.addEventListener('keydown', function (e) {
       if (e.key !== 'Tab') return;
       e.preventDefault();
@@ -1065,10 +1046,11 @@
       else goToStep(currentStep + 1);
     });
 
+    // ---------- STEP 0: 지점 칩 ----------
     function renderBranchChips() {
       const el = document.getElementById('branchChips');
       el.innerHTML = BRANCHES.map(b => `
-      <button type="button" class="chip ${state.branch === b.name ? 'selected' : ''}" onclick="selectBranch('${b.name}')" aria-label="지점: ${b.name}${state.branch === b.name ? ' (선택됨)' : ''}">${b.name}</button>
+      <button type="button" class="chip ${state.branch === b.name ? 'selected' : ''}" onclick="selectBranch('${b.name}')">${b.name}</button>
     `).join('');
     }
     function selectBranch(name) {
@@ -1077,10 +1059,11 @@
       recalc();
     }
 
+    // ---------- STEP 2: 물품명 칩 ----------
     function renderItemChips() {
       const el = document.getElementById('itemChips');
       el.innerHTML = COMMON_ITEMS.map(name => `
-      <button type="button" class="chip ${state.itemName === name ? 'selected' : ''}" onclick="selectItem('${name}')" aria-label="물품: ${name}${state.itemName === name ? ' (선택됨)' : ''}">${name}</button>
+      <button type="button" class="chip ${state.itemName === name ? 'selected' : ''}" onclick="selectItem('${name}')">${name}</button>
     `).join('');
     }
     function selectItem(name) {
@@ -1106,10 +1089,11 @@
       recalc();
     }
 
+    // ---------- STEP 3: 규격 프리셋 ----------
     function renderSizePresetChips() {
       const el = document.getElementById('sizePresetChips');
       el.innerHTML = SIZE_PRESETS.map((p, i) => `
-      <button type="button" class="chip chip-sm" onclick="applySizePreset(${i})" aria-label="규격 프리셋: ${p.label}">${p.label}</button>
+      <button type="button" class="chip chip-sm" onclick="applySizePreset(${i})">${p.label}</button>
     `).join('');
     }
     function applySizePreset(i) {
@@ -1121,6 +1105,7 @@
       recalc();
     }
 
+    // ---------- STEP 4: 도착지역 칩 + SIDO/SIGUNGU 드롭다운 ----------
     function renderAreaChips() {
       const autoRegion = determineRegion(state.receiverArea);
 
@@ -1188,6 +1173,9 @@
       recalc();
     }
 
+    // ============================================================
+    // 렌더링 (계산 패널) - F판과 동일 로직
+    // ============================================================
     function renderBannedWarning(ban) {
       const el = document.getElementById('bannedWarning');
       const box = document.getElementById('softConfirmBox');
@@ -1285,6 +1273,9 @@
       renderRateTable(gt.matched, region);
     }
 
+    // ============================================================
+    // 요약 (확인 단계) + 검증
+    // ============================================================
     function renderSummary() {
       const senderName = document.getElementById('senderName').value.trim();
       const receiverName = document.getElementById('receiverName').value.trim();
@@ -1327,6 +1318,8 @@
       if (!state.itemName) errors.push('물품명을 선택하거나 입력하세요.');
       if (weight === null) errors.push('실제 무게를 0보다 큰 숫자로 입력하세요.');
       if (width === null || height === null || depth === null) errors.push('가로・세로・높이를 모두 0보다 큰 숫자로 입력하세요.');
+      if (weight !== null && weight > 30) errors.push(`무게는 30kg까지만 접수됩니다(지금 ${weight}kg). 대형화물 전문 창구 ${BULKY_DESK_PHONE}로 안내하세요.`);
+      if ([width, height, depth].some(v => v !== null && v > 200)) errors.push(`한 변은 200cm까지만 접수됩니다. 대형화물 전문 창구 ${BULKY_DESK_PHONE}로 안내하세요.`);
 
       const ban = checkBanned(state.itemName);
       if (ban.hardHits.length > 0) {
@@ -1367,18 +1360,14 @@
       const depth = getNumeric('depthCm');
 
       const dimsWarningEl = document.getElementById('dimsWarning');
-      if (dimsWarningEl && weight !== null && width !== null && height !== null && depth !== null) {
-        const sumCm = width + height + depth;
-        const billedWeightKg = Math.max(weight, (width * height * depth) / 6000);
-        const overSum = sumCm > 160;
-        const overWeight = billedWeightKg > 25;
-        if (overSum || overWeight) {
-          dimsWarningEl.innerHTML = `<span class="badge bad">${overSum ? `세변합 ${sumCm}cm를 넘었습니다.` : ''} ${overWeight ? `요금무게 ${billedWeightKg.toFixed(2)}kg를 넘었습니다.` : ''} 일반 택배로 접수할 수 없습니다 - 대형화물 전문 창구 ${BULKY_DESK_PHONE}</span>`;
+      if (dimsWarningEl) {
+        const overWeight = weight !== null && weight > 30;
+        const overDim = [width, height, depth].some(v => v !== null && v > 200);
+        if (overWeight || overDim) {
+          dimsWarningEl.innerHTML = `<span class="badge bad">${overWeight ? '무게가 30kg를 넘었습니다.' : ''} ${overDim ? '한 변이 200cm를 넘었습니다.' : ''} 일반 택배로 접수할 수 없습니다 - 대형화물 전문 창구 ${BULKY_DESK_PHONE}</span>`;
         } else {
           dimsWarningEl.innerHTML = '';
         }
-      } else if (dimsWarningEl) {
-        dimsWarningEl.innerHTML = '';
       }
 
       if (ban.hardHits.length > 0) {
@@ -1392,28 +1381,10 @@
       updateSubmitState();
     }
 
-    // localStorage 키
-    const STORAGE_KEY = 'dudu-shipments';
-
-    // savedShipments 초기화 및 localStorage에서 로드
-    let savedShipments = [];
-    function loadShipments() {
-      try {
-        const stored = localStorage.getItem(STORAGE_KEY);
-        if (stored) savedShipments = JSON.parse(stored);
-      } catch (e) {
-        console.warn('localStorage 로드 실패:', e);
-        savedShipments = [];
-      }
-    }
-    function saveShipments() {
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(savedShipments));
-      } catch (e) {
-        console.warn('localStorage 저장 실패:', e);
-      }
-    }
-
+    // ============================================================
+    // 접수 완료 - 운송장 발급 + 목록 반영 + 영수증
+    // ============================================================
+    const savedShipments = [];
     function renderList() {
       const body = document.getElementById('listBody');
       const badge = document.getElementById('listCountBadge');
@@ -1478,6 +1449,9 @@
         sizeGrade: grade, price, etaDate: formatDateISO(etaInfo.finalDate),
       };
 
+      // ---- Supabase 연동 자리 (키를 넣지 않는다) ----
+      // const { data, error } = await supabaseClient.from('shipments').insert([{ ... }]);
+
       state.pendingShipments.push(record);
       showReceipt(record);
       resetForm();
@@ -1492,6 +1466,7 @@
       document.getElementById('itemCustomField').hidden = true;
       const sc = document.getElementById('staffConfirm'); if (sc) sc.checked = false;
       document.getElementById('softConfirmBox').hidden = true;
+      renderBranchChips(); renderItemChips(); renderAreaChips();
     }
 
     function updatePendingCount() {
@@ -1515,14 +1490,13 @@
       state.pendingShipments = [];
       updatePendingCount();
       resetForm();
-      setMainTab('list');
       renderList();
-    }
-      renderBranchChips(); renderItemChips(); renderAreaChips();
       goToStep(0);
     }
 
-    loadShipments();
+    // ============================================================
+    // 초기화
+    // ============================================================
     renderStepTabs();
     renderBranchChips();
     renderItemChips();
