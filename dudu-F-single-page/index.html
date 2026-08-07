@@ -527,11 +527,19 @@
       color: var(--muted);
     }
 
+    .rate-table-wrapper {
+      overflow-x: auto;
+      border: 1px solid var(--calc-border);
+      border-radius: 10px;
+      background: #fff;
+    }
+
     table.rate-table {
       width: 100%;
       border-collapse: collapse;
       font-size: 11.5px;
       background: #fff;
+      min-width: 450px;
     }
 
     table.rate-table th,
@@ -623,6 +631,30 @@
     [hidden] {
       display: none !important;
     }
+
+    /* ========== 다크모드 지원 ========== */
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --brand: #5b8ec4;
+        --brand-dark: #3d5a8f;
+        --accent: #ff9a56;
+        --bg: #1a1f2e;
+        --card: #242d3a;
+        --border: #3a444f;
+        --text: #e8eaed;
+        --muted: #9aa0a8;
+        --ok-bg: #1d3a25;
+        --ok-border: #2d5a3a;
+        --bad-bg: #3a1f1c;
+        --bad-border: #5a2820;
+        --bad-text: #ff6b5b;
+        --warn-bg: #3a3620;
+        --warn-border: #5a5220;
+        --warn-text: #ffb84d;
+        --calc-bg: #1f2939;
+        --calc-border: #364456;
+      }
+    }
   </style>
 </head>
 
@@ -636,18 +668,18 @@
       <div class="kbd-hint"><b>Tab</b> 다음 단계 &nbsp;/&nbsp; <b>Shift+Tab</b> 이전 단계</div>
     </div>
 
-    <div class="main-tabs">
+    <div class="main-tabs" role="tablist">
       <button type="button" class="main-tab-btn active" id="mainTabReceiveBtn"
-        onclick="setMainTab('receive')">접수하기</button>
-      <button type="button" class="main-tab-btn" id="mainTabListBtn" onclick="setMainTab('list')">접수 목록 <span
-          id="listCountBadge"></span></button>
+        onclick="setMainTab('receive')" role="tab" aria-selected="true" aria-controls="mainPanelReceive">접수하기</button>
+      <button type="button" class="main-tab-btn" id="mainTabListBtn" onclick="setMainTab('list')" role="tab" aria-selected="false" aria-controls="mainPanelList">접수 목록 <span
+          id="listCountBadge" aria-label="접수 내역 수"></span></button>
     </div>
 
     <div class="card-shell">
 
       <!-- ============ 접수하기 탭 ============ -->
-      <div id="mainPanelReceive">
-        <div class="step-tabs" id="stepTabs"></div>
+      <div id="mainPanelReceive" role="tabpanel">
+        <div class="step-tabs" id="stepTabs" role="tablist"></div>
 
         <div class="layout">
           <section class="form-panel">
@@ -728,16 +760,19 @@
             <div class="step-page" data-step="4" hidden>
               <h2>5. 도착 지역을 선택하세요</h2>
               <p class="step-desc">제주는 제주 권역, 5개 도서는 도서산간, 나머지는 전부 일반입니다 (거제·진주 포함).</p>
-              <div class="chip-group-label">일반 권역</div>
+
+              <div class="chip-group-label">자주 가는 지역 (버튼 클릭)</div>
+              <div class="chip-group-label" style="font-size:11px; margin:8px 0 8px; color:var(--muted);">🟦 일반 권역</div>
               <div class="chip-grid" id="areaChipsNormal"></div>
-              <div class="chip-group-label">제주 권역</div>
+              <div class="chip-group-label" style="font-size:11px; margin:8px 0 8px; color:var(--muted);">🟩 제주 권역</div>
               <div class="chip-grid" id="areaChipsJeju"></div>
-              <div class="chip-group-label">도서산간 권역</div>
+              <div class="chip-group-label" style="font-size:11px; margin:8px 0 8px; color:var(--muted);">🟨 도서산간 권역</div>
               <div class="chip-grid" id="areaChipsIsland"></div>
-              <div class="field">
-                <label for="areaSelect">그 외 지역 (표준 시/도 목록에서만 선택)</label>
-                <select id="areaSelect" onchange="onAreaSelectChange()"></select>
-                <p class="step-desc" style="margin-top:6px;">표기 갈림(서울/서울시/SEOUL 등)을 막기 위해 직접 타이핑은 받지 않습니다.</p>
+
+              <div class="field" style="margin-top: 20px;">
+                <label for="areaSelect">그 외 지역 (표준 시/도 목록에서 선택)</label>
+                <select id="areaSelect" onchange="onAreaSelectChange()" aria-label="표준 시도 목록"></select>
+                <p class="step-desc" style="margin-top:6px;">표기 갈림(서울/서울시 등)을 막기 위해 직접 타이핑은 받지 않습니다.</p>
               </div>
             </div>
 
@@ -750,27 +785,28 @@
             </div>
 
             <div class="btn-row">
-              <button type="button" class="nav-btn prev" id="prevBtn" onclick="goToStep(currentStep-1)">이전</button>
-              <button type="button" class="nav-btn" id="nextBtn" onclick="goToStep(currentStep+1)">다음</button>
-              <button type="button" class="submit-btn" id="submitBtn" onclick="submitShipment()" hidden disabled>접수
-                완료</button>
+              <button type="button" class="nav-btn prev" id="prevBtn" onclick="goToStep(currentStep-1)" aria-label="이전 단계로 이동">이전</button>
+              <button type="button" class="nav-btn" id="nextBtn" onclick="goToStep(currentStep+1)" aria-label="다음 단계로 이동">다음</button>
+              <button type="button" class="submit-btn" id="submitBtn" onclick="submitShipment()" hidden disabled aria-label="접수 완료">접수 완료</button>
             </div>
           </section>
 
           <section class="calc-panel">
             <h3 style="margin-top:0;">요금표 - 4등급 x 3권역 12종 전부 (규정 §3)</h3>
-            <table class="rate-table" id="rateTable">
-              <thead>
-                <tr>
-                  <th>등급</th>
-                  <th>기준(세변합 / 무게)</th>
-                  <th>일반</th>
-                  <th>제주</th>
-                  <th>도서산간</th>
-                </tr>
-              </thead>
-              <tbody></tbody>
-            </table>
+            <div class="rate-table-wrapper">
+              <table class="rate-table" id="rateTable" role="table" aria-label="배송 등급별 요금표">
+                <thead>
+                  <tr>
+                    <th>등급</th>
+                    <th>기준(세변합 / 무게)</th>
+                    <th>일반</th>
+                    <th>제주</th>
+                    <th>도서산간</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
 
             <h2 style="margin-top:20px;">계산 과정 (규정 그대로, 숫자를 대입해서 보여줍니다)</h2>
             <div id="calcSteps">
@@ -783,10 +819,10 @@
       </div>
 
       <!-- ============ 접수 목록 탭 ============ -->
-      <div id="mainPanelList" hidden>
+      <div id="mainPanelList" hidden role="tabpanel">
         <div class="list-panel">
-          <h2 style="font-size:14px;color:var(--muted);margin:0 0 8px 2px;">오늘 접수 목록 (이 브라우저 세션에서만 유지)</h2>
-          <table>
+          <h2 style="font-size:14px;color:var(--muted);margin:0 0 8px 2px;">📋 오늘 접수 목록 (브라우저 저장됨)</h2>
+          <table role="table" aria-label="오늘 접수한 택배 목록">
             <thead>
               <tr>
                 <th>운송장</th>
@@ -950,10 +986,15 @@
     const state = { branch: '', itemName: '', receiverArea: '' };
 
     function setMainTab(which) {
-      document.getElementById('mainPanelReceive').hidden = which !== 'receive';
-      document.getElementById('mainPanelList').hidden = which !== 'list';
-      document.getElementById('mainTabReceiveBtn').classList.toggle('active', which === 'receive');
-      document.getElementById('mainTabListBtn').classList.toggle('active', which === 'list');
+      const isReceive = which === 'receive';
+      document.getElementById('mainPanelReceive').hidden = !isReceive;
+      document.getElementById('mainPanelList').hidden = isReceive;
+      const receiveBtn = document.getElementById('mainTabReceiveBtn');
+      const listBtn = document.getElementById('mainTabListBtn');
+      receiveBtn.classList.toggle('active', isReceive);
+      listBtn.classList.toggle('active', !isReceive);
+      receiveBtn.setAttribute('aria-selected', isReceive ? 'true' : 'false');
+      listBtn.setAttribute('aria-selected', isReceive ? 'false' : 'true');
     }
 
     const STEPS = [
@@ -965,10 +1006,12 @@
       const el = document.getElementById('stepTabs');
       el.innerHTML = STEPS.map((s, i) => {
         const cls = ['step-tab'];
-        if (i === currentStep) cls.push('active');
-        else if (i < currentStep) cls.push('done');
-        return `<button type="button" class="${cls.join(' ')}" onclick="goToStep(${i})">
-        <span class="num">${i + 1}</span>${s.label}
+        const isActive = i === currentStep;
+        const isDone = i < currentStep;
+        if (isActive) cls.push('active');
+        else if (isDone) cls.push('done');
+        return `<button type="button" class="${cls.join(' ')}" onclick="goToStep(${i})" role="tab" aria-selected="${isActive}" aria-label="${s.label}${isDone ? ' 완료' : isActive ? ' 진행중' : ''}">
+        <span class="num" aria-hidden="true">${i + 1}</span>${s.label}
       </button>`;
       }).join('');
     }
@@ -999,7 +1042,7 @@
     function renderBranchChips() {
       const el = document.getElementById('branchChips');
       el.innerHTML = BRANCHES.map(b => `
-      <button type="button" class="chip ${state.branch === b.name ? 'selected' : ''}" onclick="selectBranch('${b.name}')">${b.name}</button>
+      <button type="button" class="chip ${state.branch === b.name ? 'selected' : ''}" onclick="selectBranch('${b.name}')" aria-label="지점: ${b.name}${state.branch === b.name ? ' (선택됨)' : ''}">${b.name}</button>
     `).join('');
     }
     function selectBranch(name) {
@@ -1011,7 +1054,7 @@
     function renderItemChips() {
       const el = document.getElementById('itemChips');
       el.innerHTML = COMMON_ITEMS.map(name => `
-      <button type="button" class="chip ${state.itemName === name ? 'selected' : ''}" onclick="selectItem('${name}')">${name}</button>
+      <button type="button" class="chip ${state.itemName === name ? 'selected' : ''}" onclick="selectItem('${name}')" aria-label="물품: ${name}${state.itemName === name ? ' (선택됨)' : ''}">${name}</button>
     `).join('');
     }
     function selectItem(name) {
@@ -1040,7 +1083,7 @@
     function renderSizePresetChips() {
       const el = document.getElementById('sizePresetChips');
       el.innerHTML = SIZE_PRESETS.map((p, i) => `
-      <button type="button" class="chip chip-sm" onclick="applySizePreset(${i})">${p.label}</button>
+      <button type="button" class="chip chip-sm" onclick="applySizePreset(${i})" aria-label="규격 프리셋: ${p.label}">${p.label}</button>
     `).join('');
     }
     function applySizePreset(i) {
@@ -1054,12 +1097,12 @@
 
     function renderAreaChips() {
       document.getElementById('areaChipsNormal').innerHTML = NORMAL_AREAS.map(a => `
-      <button type="button" class="chip ${state.receiverArea === a ? 'selected' : ''}" onclick="selectArea('${a}')">${a}</button>
+      <button type="button" class="chip ${state.receiverArea === a ? 'selected' : ''}" onclick="selectArea('${a}')" aria-label="도착지: ${a}${state.receiverArea === a ? ' (선택됨)' : ''}">${a}</button>
     `).join('');
       document.getElementById('areaChipsJeju').innerHTML = `
-      <button type="button" class="chip ${state.receiverArea === '제주' ? 'selected' : ''}" onclick="selectArea('제주')">제주</button>`;
+      <button type="button" class="chip ${state.receiverArea === '제주' ? 'selected' : ''}" onclick="selectArea('제주')" aria-label="도착지: 제주${state.receiverArea === '제주' ? ' (선택됨)' : ''}">제주</button>`;
       document.getElementById('areaChipsIsland').innerHTML = ISLAND_AREAS.map(a => `
-      <button type="button" class="chip ${state.receiverArea === a ? 'selected' : ''}" onclick="selectArea('${a}')">${a}</button>
+      <button type="button" class="chip ${state.receiverArea === a ? 'selected' : ''}" onclick="selectArea('${a}')" aria-label="도착지: ${a}${state.receiverArea === a ? ' (선택됨)' : ''}">${a}</button>
     `).join('');
       const select = document.getElementById('areaSelect');
       if (select) {
@@ -1277,7 +1320,28 @@
       updateSubmitState();
     }
 
-    const savedShipments = [];
+    // localStorage 키
+    const STORAGE_KEY = 'dudu-shipments';
+
+    // savedShipments 초기화 및 localStorage에서 로드
+    let savedShipments = [];
+    function loadShipments() {
+      try {
+        const stored = localStorage.getItem(STORAGE_KEY);
+        if (stored) savedShipments = JSON.parse(stored);
+      } catch (e) {
+        console.warn('localStorage 로드 실패:', e);
+        savedShipments = [];
+      }
+    }
+    function saveShipments() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(savedShipments));
+      } catch (e) {
+        console.warn('localStorage 저장 실패:', e);
+      }
+    }
+
     function renderList() {
       const body = document.getElementById('listBody');
       const badge = document.getElementById('listCountBadge');
@@ -1341,6 +1405,7 @@
       };
 
       savedShipments.push(record);
+      saveShipments();
       renderList();
       showReceipt(record);
       resetForm();
@@ -1358,6 +1423,7 @@
       goToStep(0);
     }
 
+    loadShipments();
     renderStepTabs();
     renderBranchChips();
     renderItemChips();
