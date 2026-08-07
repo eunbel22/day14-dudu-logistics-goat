@@ -191,4 +191,39 @@ table.rate-table td.cell-match { background: var(--brand); color: #fff; font-wei
   background: var(--brand); color: #fff; text-decoration: none; font-weight: 700; font-size: 14px;
 }
 
+/* ---------- 관리자 페이지(admin.html) 전용 ---------- */
+.admin-gate { max-width: 380px; margin: 60px auto; text-align: center; }
+.admin-gate .gate-icon { font-size: 40px; margin-bottom: 12px; }
+.admin-gate input { text-align: center; letter-spacing: 4px; font-size: 20px; }
+.admin-gate .gate-warning { font-size: 11.5px; color: var(--muted); margin-top: 14px; line-height: 1.6; }
+.admin-gate .gate-error { color: var(--bad-text); font-size: 13px; margin-top: 10px; min-height: 16px; }
+
+.admin-panel { padding: 22px; }
+
+.stat-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; margin-bottom: 20px; }
+.stat-card { background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; }
+.stat-card .stat-label { font-size: 12px; color: var(--muted); font-weight: 700; }
+.stat-card .stat-value { font-size: 22px; font-weight: 800; color: var(--brand-dark); margin-top: 4px; }
+.stat-card .stat-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+.admin-filter-bar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 16px; padding: 14px; background: var(--calc-bg); border: 1px solid var(--calc-border); border-radius: 12px; }
+.admin-filter-bar select, .admin-filter-bar input[type="text"] { width: auto; min-width: 140px; padding: 10px 12px; font-size: 14px; }
+.filter-chip-row { display: flex; gap: 6px; }
+.filter-chip {
+  padding: 8px 14px; border: 1.5px solid var(--border); border-radius: 20px; background: #fff;
+  font-size: 12.5px; font-weight: 700; color: var(--text); cursor: pointer;
+}
+.filter-chip.selected { background: var(--brand); border-color: var(--brand); color: #fff; }
+.admin-export-btn {
+  margin-left: auto; padding: 10px 16px; border: none; border-radius: 10px; background: var(--accent);
+  color: #fff; font-weight: 800; font-size: 13.5px; cursor: pointer;
+}
+
+.admin-table-wrap { overflow-x: auto; }
+.admin-table-wrap table { width: 100%; border-collapse: collapse; font-size: 12px; background: #fff; }
+.admin-table-wrap th, .admin-table-wrap td { border: 1px solid var(--border); padding: 7px 6px; text-align: left; white-space: nowrap; }
+.admin-table-wrap th { background: #eef2f6; position: sticky; top: 0; }
+.admin-table-wrap tbody tr:hover { background: #f7fbff; }
+.grade-pill { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 700; background: var(--calc-bg); color: var(--brand-dark); }
+
 [hidden] { display: none !important; }
