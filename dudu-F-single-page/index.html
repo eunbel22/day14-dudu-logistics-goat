@@ -829,7 +829,15 @@
     </div>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
+    // Supabase 초기화
+    const supabaseUrl = process.env.SUPABASE_URL || '';
+    const supabaseKey = process.env.SUPABASE_ANON_KEY || '';
+    const supabaseClient = supabaseUrl && supabaseKey
+      ? window.supabase.createClient(supabaseUrl, supabaseKey)
+      : null;
+
     // ============================================================
     // 계산 정본 - 02_접수규정.md §1-9. F판과 완전히 동일 (로직 변경 없음).
     // ============================================================
@@ -1384,20 +1392,41 @@
     // ============================================================
     // 접수 완료 - 운송장 발급 + 목록 반영 + 영수증
     // ============================================================
-    const savedShipments = [];
-    function renderList() {
+    async function renderList() {
       const body = document.getElementById('listBody');
       const badge = document.getElementById('listCountBadge');
-      badge.textContent = savedShipments.length > 0 ? `(${savedShipments.length})` : '';
-      if (savedShipments.length === 0) {
-        body.innerHTML = '<tr class="empty-row"><td colspan="11">아직 접수 내역이 없습니다</td></tr>';
+
+      if (!supabaseClient) {
+        badge.textContent = '';
+        body.innerHTML = '<tr class="empty-row"><td colspan="12">Supabase 미연결</td></tr>';
         return;
       }
-      body.innerHTML = savedShipments.map(s => `
+
+      const { data, error } = await supabaseClient
+        .from('shipments')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error('조회 실패:', error);
+        badge.textContent = '';
+        body.innerHTML = '<tr class="empty-row"><td colspan="12">조회 실패</td></tr>';
+        return;
+      }
+
+      const shipments = data || [];
+      badge.textContent = shipments.length > 0 ? `(${shipments.length})` : '';
+
+      if (shipments.length === 0) {
+        body.innerHTML = '<tr class="empty-row"><td colspan="12">아직 접수 내역이 없습니다</td></tr>';
+        return;
+      }
+
+      body.innerHTML = shipments.map(s => `
       <tr>
-        <td>${s.trackingNo}</td><td>${s.branchName}</td><td>${s.senderName}</td><td>${s.receiverName}</td><td>${s.receiverPhone || '-'}</td>
-        <td>${s.receiverArea}</td><td>${s.regionType}</td><td>${s.itemName}</td>
-        <td>${s.billedWeightKg}kg</td><td>${s.sizeGrade}</td><td>${formatWon(s.price)}</td><td>${s.etaDate}</td>
+        <td>${s.tracking_no}</td><td>${s.branch_name}</td><td>${s.sender_name}</td><td>${s.receiver_name}</td><td>${s.receiver_phone || '-'}</td>
+        <td>${s.receiver_area}</td><td>${s.region_type}</td><td>${s.item_name}</td>
+        <td>${s.billed_weight_kg}kg</td><td>${s.size_grade}</td><td>${formatWon(s.price)}</td><td>${s.eta_date}</td>
       </tr>`).join('');
     }
     function showReceipt(record) {
@@ -1415,7 +1444,7 @@
       </div>`;
       el.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
-    function submitShipment() {
+    async function submitShipment() {
       const errors = validateAll();
       if (errors.length > 0) { updateSubmitState(); return; }
 
@@ -1442,21 +1471,38 @@
       const trackingNo = nextTrackingNo(branchCode);
 
       const record = {
-        trackingNo, branchName, senderName, receiverName, receiverPhone,
-        receiverArea: area, regionType: region, itemName,
-        weightKg: weight, widthCm: width, heightCm: height, depthCm: depth,
-        billedWeightKg: Math.round(billedWeightKg * 10) / 10,
-        sizeGrade: grade, price, etaDate: formatDateISO(etaInfo.finalDate),
+        tracking_no: trackingNo,
+        branch_name: branchName,
+        sender_name: senderName,
+        receiver_name: receiverName,
+        receiver_phone: receiverPhone,
+        receiver_area: area,
+        region_type: region,
+        item_name: itemName,
+        weight_kg: weight,
+        width_cm: width,
+        height_cm: height,
+        depth_cm: depth,
+        billed_weight_kg: Math.round(billedWeightKg * 10) / 10,
+        size_grade: grade,
+        price: price,
+        eta_date: formatDateISO(etaInfo.finalDate),
       };
 
-      // ---- Supabase 연동 자리 (키를 넣지 않는다) ----
-      // const { data, error } = await supabaseClient.from('shipments').insert([{ ... }]);
+      if (supabaseClient) {
+        const { error } = await supabaseClient.from('shipments').insert([record]);
+        if (error) {
+          alert('저장 실패: ' + error.message);
+          return;
+        }
+      }
 
       state.pendingShipments.push(record);
-      showReceipt(record);
+      showReceipt({ ...record, trackingNo });
       resetForm();
       updatePendingCount();
       goToStep(0);
+      if (supabaseClient) setTimeout(() => renderList(), 500);
     }
 
     function resetForm() {
@@ -1483,10 +1529,7 @@
         alert('저장할 접수가 없습니다.');
         return;
       }
-      if (!confirm(`총 ${count}건의 접수를 저장하시겠습니까?`)) return;
-
-      state.pendingShipments.forEach(record => savedShipments.push(record));
-      saveShipments();
+      alert(`${count}건 저장됨`);
       state.pendingShipments = [];
       updatePendingCount();
       resetForm();
