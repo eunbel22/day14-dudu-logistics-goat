@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>두두택배 - 접수 영수증 조회</title>
+<meta name="description" content="두두택배 운송장번호로 접수 내역과 도착 예정일을 조회합니다.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="receipt-page-shell">
+  <div class="topbar" style="border-radius: 18px;">
+    <a class="brand-link" href="index.html">
+      <div class="brand">두두택배</div>
+      <div class="sub">접수 영수증 조회</div>
+    </a>
+  </div>
+
+  <div style="margin-top: 16px;">
+    <div class="receipt-state" id="receiptContainer">
+      <div class="spinner">⏳</div>
+      조회하고 있습니다...
+    </div>
+  </div>
+</div>
+
+<div class="site-footer">
+  <div><b>두두택배</b> 고객센터 1588-1234 &nbsp;·&nbsp; 대형화물 전문 창구 1600-5678</div>
+  <div class="footer-links"><a href="index.html">새 접수 시작</a></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="common.js"></script>
+<script src="receipt.js"></script>
+</body>
+</html>

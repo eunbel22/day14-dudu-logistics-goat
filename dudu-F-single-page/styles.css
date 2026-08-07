@@ -1,0 +1,194 @@
+/* ============================================================
+   두두택배 공통 스타일시트
+   index.html(접수 키오스크)와 receipt.html(영수증 조회) 둘 다에서 쓴다.
+   ============================================================ */
+
+:root {
+  --brand: #14508c; --brand-dark: #0d3a66; --accent: #e0692a;
+  --bg: #eef1f4; --card: #ffffff; --border: #d7dde3; --text: #1c2733; --muted: #667485;
+  --ok-bg: #eef7f0; --ok-border: #b9dfc2;
+  --bad-bg: #fbeceb; --bad-border: #eab6b0; --bad-text: #c0392b;
+  --warn-bg: #fff8e6; --warn-border: #f0d68a; --warn-text: #8a6d1f;
+  --calc-bg: #f5f8fc; --calc-border: #cfe0f0;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  padding: 20px 16px 60px;
+}
+.page { max-width: 1160px; margin: 0 auto; }
+.topbar { background: var(--brand); color: #fff; padding: 20px 24px; border-radius: 18px 18px 0 0; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 10px; }
+.topbar a.brand-link { color: inherit; text-decoration: none; }
+.topbar .brand { font-size: 26px; font-weight: 800; letter-spacing: 1px; }
+.topbar .sub { font-size: 13px; opacity: .85; margin-top: 4px; }
+.kbd-hint { font-size: 12px; background: rgba(255,255,255,.14); padding: 7px 12px; border-radius: 8px; }
+.kbd-hint b { background: rgba(255,255,255,.25); padding: 1px 6px; border-radius: 4px; }
+
+/* ---------- 최상단 큰 탭: 접수하기 / 접수 목록 ---------- */
+.main-tabs { display: flex; gap: 0; background: var(--brand-dark); }
+.main-tab-btn {
+  flex: 1; padding: 16px; border: none; background: transparent; color: rgba(255,255,255,.65);
+  font-size: 16px; font-weight: 700; cursor: pointer; border-bottom: 4px solid transparent;
+}
+.main-tab-btn.active { color: #fff; border-bottom-color: var(--accent); background: rgba(255,255,255,.06); }
+
+.card-shell { background: var(--card); border: 1px solid var(--border); border-top: none; border-radius: 0 0 18px 18px; overflow: hidden; }
+
+/* ---------- 단계 진행바 (큰 원형 스텝퍼 - 편의점 키오스크 진행바 참고) ---------- */
+.step-tabs { display: flex; overflow-x: auto; border-bottom: 1px solid var(--border); background: #f7f9fb; padding: 14px 10px; gap: 2px; }
+.step-tab {
+  flex: 1; min-width: 78px; padding: 6px 4px; text-align: center; border: none; background: transparent;
+  cursor: pointer; font-size: 12.5px; color: var(--muted); white-space: nowrap; display: flex; flex-direction: column; align-items: center; gap: 6px;
+}
+.step-tab .num { display: flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 50%; background: #fff; border: 2px solid var(--border); color: var(--muted); font-size: 14px; font-weight: 800; }
+.step-tab.active { color: var(--brand-dark); font-weight: 800; }
+.step-tab.active .num { background: var(--brand); border-color: var(--brand); color: #fff; }
+.step-tab.done .num { background: #4c9a63; border-color: #4c9a63; color: #fff; }
+.step-tab.done { color: #3a7a4c; }
+
+/* 단계마다 계산 패널이 항상 붙어 있으면 화면이 늘 꽉 차 보인다.
+   기본은 입력 화면 하나만 꽉 차게 보여주고(한 화면 = 질문 하나),
+   계산 결과는 확인 단계(마지막)에서만 두 칸으로 펼친다. */
+.layout { display: grid; grid-template-columns: 1fr; gap: 0; align-items: start; }
+.layout.show-calc { grid-template-columns: 1.05fr 1fr; }
+@media (max-width: 900px) { .layout.show-calc { grid-template-columns: 1fr; } }
+
+.form-panel { padding: 32px 28px 24px; border-right: none; min-height: 420px; display: flex; flex-direction: column; }
+.layout.show-calc .form-panel { border-right: 1px solid var(--border); }
+.calc-panel { display: none; padding: 28px; background: var(--calc-bg); }
+.layout.show-calc .calc-panel { display: block; }
+@media (max-width: 900px) { .layout.show-calc .form-panel { border-right: none; border-bottom: 1px solid var(--border); } }
+
+.step-icon { font-size: 40px; line-height: 1; margin-bottom: 10px; }
+h2 { font-size: 20px; margin: 0 0 6px; }
+.step-desc { font-size: 13.5px; color: var(--muted); margin: 0 0 20px; line-height: 1.5; }
+h3 { font-size: 13px; color: var(--muted); margin: 18px 0 8px; }
+
+/* ---------- 버튼 칩 (지점 / 도착지역 / 물품명 / 규격 프리셋) - 터치 목표를 크게 ---------- */
+.chip-grid { display: flex; flex-wrap: wrap; gap: 10px; }
+.chip {
+  padding: 16px 22px; border: 2px solid var(--border); border-radius: 12px; background: #fff;
+  font-size: 16px; font-weight: 700; color: var(--text); cursor: pointer; text-align: center;
+}
+.chip:hover { border-color: var(--brand); }
+.chip.selected { background: var(--brand); border-color: var(--brand); color: #fff; }
+.chip.chip-sm { padding: 12px 16px; font-size: 13.5px; font-weight: 600; }
+.chip.chip-banned-hint { border-style: dashed; color: var(--muted); background: #fafbfc; cursor: default; }
+.chip-group-label { font-size: 12.5px; color: var(--muted); font-weight: 700; margin: 18px 0 8px; }
+.chip-group-label:first-child { margin-top: 0; }
+
+.field { margin-top: 18px; }
+.field label { display: block; font-size: 14px; font-weight: 700; color: var(--text); margin: 0 0 8px; }
+.req { color: var(--bad-text); font-weight: 700; font-size: 11.5px; }
+input[type="text"], input[type="number"], select {
+  width: 100%; padding: 14px 14px; border: 2px solid var(--border); border-radius: 10px;
+  font-size: 17px; background: #fff; font-family: inherit;
+}
+input[type="text"]:focus, input[type="number"]:focus, select:focus { border-color: var(--brand); outline: none; }
+.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.row4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+@media (max-width: 520px) { .row4 { grid-template-columns: 1fr 1fr; } }
+.dim-label { font-size: 12px; color: var(--muted); margin-bottom: 4px; font-weight: 600; }
+.custom-toggle { font-size: 13px; color: var(--brand); background: none; border: none; text-decoration: underline; cursor: pointer; padding: 8px 0; }
+
+.inline-warning { min-height: 18px; margin-top: 10px; font-size: 13px; }
+.badge { display: inline-block; padding: 7px 12px; border-radius: 8px; }
+.badge.bad { background: var(--bad-bg); border: 1px solid var(--bad-border); color: var(--bad-text); }
+.badge.warn { background: var(--warn-bg); border: 1px solid var(--warn-border); color: var(--warn-text); }
+
+.soft-confirm { margin-top: 10px; background: var(--warn-bg); border: 1px solid var(--warn-border); border-radius: 10px; padding: 12px 14px; font-size: 13px; color: var(--warn-text); }
+.soft-confirm label { display: flex; align-items: center; gap: 8px; margin-top: 10px; font-weight: 700; color: var(--text); }
+
+/* 크기/무게・도착지역 단계에서 옆에 계산패널 없이도 바로 감이 오게
+   보여주는 요약 배지 (편의점 저울 화면의 "요금 미리보기"를 참고) */
+.mini-preview { display: none; margin-top: 20px; padding: 16px 18px; background: var(--calc-bg); border: 1.5px solid var(--calc-border); border-radius: 12px; }
+.mini-preview.show { display: flex; flex-wrap: wrap; gap: 18px; align-items: center; }
+.mini-preview .mp-item { font-size: 13px; color: var(--muted); }
+.mini-preview .mp-item b { display: block; font-size: 17px; color: var(--brand-dark); margin-top: 2px; }
+.mini-preview.reject { background: var(--bad-bg); border-color: var(--bad-border); }
+.mini-preview.reject .mp-item, .mini-preview.reject .mp-item b { color: var(--bad-text); }
+
+.summary-box { border: 1px solid var(--border); border-radius: 12px; padding: 16px 18px; background: #fafbfc; }
+.summary-row { display: flex; justify-content: space-between; font-size: 14.5px; padding: 8px 0; border-bottom: 1px dashed var(--border); }
+.summary-row:last-child { border-bottom: none; }
+.summary-row span:first-child { color: var(--muted); }
+.summary-row span:last-child { font-weight: 700; }
+.summary-empty { color: var(--muted); font-size: 12.5px; }
+
+.error-box { margin-top: 14px; min-height: 1px; }
+.error-title { font-size: 13px; font-weight: 700; color: var(--bad-text); margin-bottom: 4px; }
+.error-box ul { margin: 0; padding-left: 18px; font-size: 13px; color: var(--bad-text); line-height: 1.7; }
+
+.btn-row { display: flex; gap: 12px; margin-top: auto; padding-top: 24px; position: sticky; bottom: 0; background: #fff; }
+.nav-btn, .submit-btn {
+  flex: 1; padding: 18px; font-size: 17px; font-weight: 800; color: #fff;
+  background: var(--brand); border: none; border-radius: 12px; cursor: pointer;
+}
+.nav-btn.prev { background: #fff; color: var(--text); border: 2px solid var(--border); flex: 0.6; }
+.nav-btn:disabled, .submit-btn:disabled { background: #a9b6c4; cursor: not-allowed; }
+.submit-btn { background: var(--accent); }
+
+.calc-pending { color: var(--muted); font-size: 13px; padding: 34px 10px; text-align: center; border: 1px dashed var(--calc-border); border-radius: 10px; background: #fff; }
+.calc-step { background: #fff; border: 1px solid var(--calc-border); border-radius: 10px; padding: 10px 14px; margin-bottom: 8px; font-size: 13px; }
+.calc-step-title { font-weight: 700; color: var(--brand-dark); margin-bottom: 4px; font-size: 13px; }
+.calc-step-body { color: var(--text); line-height: 1.65; }
+.calc-step.reject { background: var(--bad-bg); border-color: var(--bad-border); }
+.calc-step.reject .calc-step-title { color: var(--bad-text); }
+.calc-step.pending-note { background: #f6f8fa; color: var(--muted); }
+
+table.rate-table { width: 100%; border-collapse: collapse; font-size: 11.5px; background: #fff; }
+table.rate-table th, table.rate-table td { border: 1px solid var(--border); padding: 6px 5px; text-align: center; }
+table.rate-table th { background: #eef2f6; }
+table.rate-table tr.grade-match td:first-child { background: #dbe9f7; font-weight: 700; }
+table.rate-table td.cell-match { background: var(--brand); color: #fff; font-weight: 800; }
+
+.receipt-section { margin-top: 18px; }
+.receipt-card { background: var(--ok-bg); border: 1px solid var(--ok-border); border-radius: 12px; padding: 24px; text-align: center; }
+.receipt-title { font-weight: 800; font-size: 16px; }
+.receipt-tno { font-size: 22px; font-weight: 800; color: var(--brand-dark); margin: 10px 0; letter-spacing: 1px; }
+.receipt-line { font-size: 13.5px; margin-top: 5px; color: var(--text); }
+.receipt-price { font-size: 26px; font-weight: 800; color: var(--brand-dark); margin: 12px 0; }
+.receipt-eta { display: inline-block; margin-top: 10px; padding: 8px 16px; background: #fff; border: 1px solid var(--ok-border); border-radius: 20px; font-size: 13px; font-weight: 700; color: #3a7a4c; }
+
+.share-row { display: flex; gap: 10px; margin-top: 18px; }
+.share-btn {
+  flex: 1; padding: 14px; font-size: 14.5px; font-weight: 800; border-radius: 10px; cursor: pointer;
+  background: var(--brand); color: #fff; border: none;
+}
+.share-btn.secondary { background: #fff; color: var(--text); border: 2px solid var(--border); }
+.share-toast {
+  margin-top: 10px; font-size: 12.5px; color: #3a7a4c; text-align: center; min-height: 16px;
+}
+
+.list-panel { padding: 20px 22px; }
+.list-panel table { width: 100%; border-collapse: collapse; font-size: 11.5px; background: #fff; }
+.list-panel th, .list-panel td { border: 1px solid var(--border); padding: 6px 5px; text-align: left; }
+.list-panel th { background: #eef2f6; }
+.empty-row td { text-align: center; color: var(--muted); padding: 14px; }
+
+/* 운송장번호로 조회 검색창 (접수 목록 탭 상단) */
+.tracking-search { display: flex; gap: 8px; margin: 0 0 16px; }
+.tracking-search input { flex: 1; padding: 12px 14px; border: 2px solid var(--border); border-radius: 10px; font-size: 15px; }
+.tracking-search button { padding: 0 20px; border: none; border-radius: 10px; background: var(--brand); color: #fff; font-weight: 800; cursor: pointer; }
+
+/* ---------- 푸터 ---------- */
+.site-footer { max-width: 1160px; margin: 18px auto 0; padding: 18px 24px; color: var(--muted); font-size: 12.5px; line-height: 1.7; text-align: center; }
+.site-footer b { color: var(--text); }
+.site-footer .footer-links { margin-top: 6px; }
+.site-footer .footer-links a { color: var(--brand); text-decoration: none; margin: 0 6px; }
+
+/* ---------- 영수증 조회 페이지(receipt.html) 전용 ---------- */
+.receipt-page-shell { max-width: 560px; margin: 40px auto; }
+.receipt-state { text-align: center; padding: 60px 20px; color: var(--muted); }
+.receipt-state .spinner { font-size: 32px; margin-bottom: 12px; }
+.receipt-not-found { text-align: center; padding: 40px 20px; }
+.receipt-not-found .big-icon { font-size: 44px; margin-bottom: 10px; }
+.back-home-btn {
+  display: inline-block; margin-top: 18px; padding: 12px 22px; border-radius: 10px;
+  background: var(--brand); color: #fff; text-decoration: none; font-weight: 700; font-size: 14px;
+}
+
+[hidden] { display: none !important; }
