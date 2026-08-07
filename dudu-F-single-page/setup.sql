@@ -11,6 +11,33 @@
 -- ============================================================
 
 -- ------------------------------------------------------------
+-- 0. 기존 오브젝트 정리 (재실행 가능하게, F버전 shipments와도 충돌 안 나게)
+-- 순서 중요: 참조하는 쪽(테이블) 먼저, 참조받는 쪽(타입) 나중에.
+-- CASCADE를 쓰면 의존 객체(트리거, 정책 등)도 같이 정리된다.
+-- ------------------------------------------------------------
+DROP TABLE IF EXISTS shipments CASCADE;
+DROP TABLE IF EXISTS branch_sequences CASCADE;
+DROP TABLE IF EXISTS rate_table CASCADE;
+DROP TABLE IF EXISTS region_lookup CASCADE;
+DROP TABLE IF EXISTS banned_items CASCADE;
+DROP TABLE IF EXISTS branches CASCADE;
+
+DROP FUNCTION IF EXISTS trg_shipments_before_save() CASCADE;
+DROP FUNCTION IF EXISTS fn_next_tracking_no(CHAR) CASCADE;
+DROP FUNCTION IF EXISTS fn_add_business_days(TIMESTAMP, INT) CASCADE;
+DROP FUNCTION IF EXISTS fn_determine_grade(NUMERIC, NUMERIC) CASCADE;
+DROP FUNCTION IF EXISTS fn_determine_region(TEXT) CASCADE;
+
+DROP TYPE IF EXISTS size_grade_enum CASCADE;
+DROP TYPE IF EXISTS region_type_enum CASCADE;
+
+-- F버전에서 쓰던 이름이 다른(짧은) 타입도 같이 정리 - 안 지우면
+-- 이름만 다르고 내용은 같은 타입 두 개가 계속 남아있게 된다.
+DROP TYPE IF EXISTS size_grade CASCADE;
+DROP TYPE IF EXISTS region_type CASCADE;
+
+
+-- ------------------------------------------------------------
 -- 1. 참조(lookup) 테이블
 -- ------------------------------------------------------------
 
@@ -285,6 +312,31 @@ CREATE TRIGGER shipments_before_save
 CREATE INDEX idx_shipments_accepted_at   ON shipments (accepted_at);
 CREATE INDEX idx_shipments_region_type   ON shipments (region_type);
 CREATE INDEX idx_shipments_receiver_area ON shipments (receiver_area);
+
+
+-- ------------------------------------------------------------
+-- 4-1. RLS - shipments 테이블에만 켠다
+--
+-- branches / rate_table / region_lookup / banned_items /
+-- branch_sequences는 고객 개인정보가 아니라 요금표・지점목록・
+-- 금지어목록・채번용 시퀀스 같은 내부 참조 데이터라 RLS를 켜지
+-- 않는다. 여기 RLS를 켜고 정책을 안 넣으면 트리거가 이 테이블들을
+-- 못 읽어서(또는 시퀀스를 못 올려서) 접수 자체가 막혀버린다.
+--
+-- Supabase SQL Editor에서 이 스크립트를 실행하면 "Potential issue
+-- detected" 팝업이 뜨는데, 이때 "Run without RLS"를 선택해야 한다.
+-- (RLS가 필요한 shipments는 아래에서 이미 명시적으로 켜고 정책까지
+-- 넣고 있으므로, 에디터가 자동으로 걸어주는 일괄 RLS는 필요 없다.)
+-- ------------------------------------------------------------
+ALTER TABLE shipments ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "anon_insert_shipments" ON shipments
+  FOR INSERT TO anon
+  WITH CHECK (true);
+
+CREATE POLICY "anon_select_shipments" ON shipments
+  FOR SELECT TO anon
+  USING (true);
 
 
 -- ------------------------------------------------------------
