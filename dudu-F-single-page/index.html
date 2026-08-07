@@ -264,6 +264,19 @@
       color: #fff;
     }
 
+    .chip[disabled] {
+      cursor: default;
+      opacity: 0.75;
+      background: var(--calc-bg);
+      border-color: var(--calc-border);
+    }
+
+    .chip[disabled].selected {
+      background: var(--brand);
+      color: #fff;
+      opacity: 1;
+    }
+
     .chip.chip-sm {
       padding: 8px 12px;
       font-size: 12.5px;
@@ -718,19 +731,19 @@
                 <label>가로 x 세로 x 높이 (cm) <span class="req">필수</span></label>
                 <div class="row4">
                   <div>
-                    <div class="dim-label">가로</div><input type="number" id="widthCm" step="any" min="0"
+                    <div class="dim-label">가로</div><input type="number" id="widthCm" step="any" min="0" max="200"
                       oninput="recalc()">
                   </div>
                   <div>
-                    <div class="dim-label">세로</div><input type="number" id="heightCm" step="any" min="0"
+                    <div class="dim-label">세로</div><input type="number" id="heightCm" step="any" min="0" max="200"
                       oninput="recalc()">
                   </div>
                   <div>
-                    <div class="dim-label">높이</div><input type="number" id="depthCm" step="any" min="0"
+                    <div class="dim-label">높이</div><input type="number" id="depthCm" step="any" min="0" max="200"
                       oninput="recalc()">
                   </div>
                   <div>
-                    <div class="dim-label">무게(kg)</div><input type="number" id="weightKg" step="any" min="0"
+                    <div class="dim-label">무게(kg)</div><input type="number" id="weightKg" step="any" min="0" max="25"
                       oninput="recalc()">
                   </div>
                 </div>
@@ -745,7 +758,7 @@
               <h2>5. 도착 지역을 선택하세요</h2>
               <p class="step-desc">제주는 제주 권역, 5개 도서는 도서산간, 나머지는 전부 일반입니다 (거제·진주 포함).</p>
 
-              <div class="chip-group-label">자주 가는 지역 (버튼 클릭)</div>
+              <div class="chip-group-label">권역 (자동으로 판정됨)</div>
               <div class="chip-group-label" style="font-size:11px; margin:8px 0 8px; color:var(--muted);">🟦 일반 권역</div>
               <div class="chip-grid" id="areaChipsNormal"></div>
               <div class="chip-group-label" style="font-size:11px; margin:8px 0 8px; color:var(--muted);">🟩 제주 권역</div>
@@ -1101,14 +1114,19 @@
     }
 
     function renderAreaChips() {
+      const autoRegion = determineRegion(state.receiverArea);
+
       document.getElementById('areaChipsNormal').innerHTML = NORMAL_AREAS.map(a => `
-      <button type="button" class="chip ${state.receiverArea === a ? 'selected' : ''}" onclick="selectArea('${a}')" aria-label="도착지: ${a}${state.receiverArea === a ? ' (선택됨)' : ''}">${a}</button>
+      <button type="button" class="chip ${autoRegion === '일반' && NORMAL_AREAS.includes(state.receiverArea) ? 'selected' : ''}" disabled>${a}</button>
     `).join('');
+
       document.getElementById('areaChipsJeju').innerHTML = `
-      <button type="button" class="chip ${state.receiverArea === '제주' ? 'selected' : ''}" onclick="selectArea('제주')" aria-label="도착지: 제주${state.receiverArea === '제주' ? ' (선택됨)' : ''}">제주</button>`;
+      <button type="button" class="chip ${autoRegion === '제주' ? 'selected' : ''}" disabled>제주</button>`;
+
       document.getElementById('areaChipsIsland').innerHTML = ISLAND_AREAS.map(a => `
-      <button type="button" class="chip ${state.receiverArea === a ? 'selected' : ''}" onclick="selectArea('${a}')" aria-label="도착지: ${a}${state.receiverArea === a ? ' (선택됨)' : ''}">${a}</button>
+      <button type="button" class="chip ${autoRegion === '도서산간' && state.receiverArea === a ? 'selected' : ''}" disabled>${a}</button>
     `).join('');
+
       renderSidoDropdowns();
     }
 
