@@ -116,15 +116,19 @@
           <div class="step-page" data-step="4" hidden>
             <div class="step-icon">📍</div>
             <h2>5. 도착 지역을 선택하세요</h2>
-            <p class="step-desc">제주는 제주 권역, 5개 도서는 도서산간, 나머지는 전부 일반입니다 (거제·진주 포함).</p>
-            <div class="chip-group-label">일반 권역</div>
+            <p class="step-desc">아래 버튼과 드롭다운은 <b>같은 걸 고르는 두 가지 방법</b>입니다. 버튼에 원하는 지역이 있으면 버튼만 누르세요. 버튼에 없는 지역일 때만 맨 아래 드롭다운을 쓰세요 - 버튼을 누른 다음 드롭다운도 또 누를 필요는 없습니다.</p>
+
+            <div class="selected-tag" id="selectedAreaTag"></div>
+
+            <p class="step-desc" style="margin-top:16px;">제주는 제주 권역, 5개 도서는 도서산간, 나머지는 전부 일반입니다 (거제·진주 포함).</p>
+            <div class="chip-group-label">① 목록에서 버튼으로 고르기 - 일반 권역</div>
             <div class="chip-grid" id="areaChipsNormal"></div>
             <div class="chip-group-label">제주 권역</div>
             <div class="chip-grid" id="areaChipsJeju"></div>
             <div class="chip-group-label">도서산간 권역</div>
             <div class="chip-grid" id="areaChipsIsland"></div>
             <div class="field">
-              <label for="areaSelect">그 외 지역 (표준 시/도 목록에서만 선택)</label>
+              <label for="areaSelect">② 위 버튼에 없는 지역이라면 - 여기서만 선택 (위 버튼은 누르지 마세요)</label>
               <select id="areaSelect" onchange="onAreaSelectChange()"></select>
               <p class="step-desc" style="margin-top:6px;">표기 갈림(서울/서울시/SEOUL 등)을 막기 위해 직접 타이핑은 받지 않습니다.</p>
             </div>

@@ -78,6 +78,15 @@ h3 { font-size: 13px; color: var(--muted); margin: 18px 0 8px; }
 .chip-group-label { font-size: 12.5px; color: var(--muted); font-weight: 700; margin: 18px 0 8px; }
 .chip-group-label:first-child { margin-top: 0; }
 
+/* 도착지역 단계 - 버튼/드롭다운 중 뭘 골랐는지 한눈에 보이는 표시.
+   "버튼 누르고 드롭다운도 또 누르는" 혼동을 줄이려고 추가함. */
+.selected-tag {
+  display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px; border-radius: 10px;
+  font-size: 14px; font-weight: 700; background: #f6f8fa; color: var(--muted); border: 1.5px dashed var(--border);
+}
+.selected-tag.picked { background: var(--ok-bg); border: 1.5px solid var(--ok-border); color: #2f6a41; }
+.selected-tag .tag-icon { font-size: 16px; }
+
 .field { margin-top: 18px; }
 .field label { display: block; font-size: 14px; font-weight: 700; color: var(--text); margin: 0 0 8px; }
 .req { color: var(--bad-text); font-weight: 700; font-size: 11.5px; }
