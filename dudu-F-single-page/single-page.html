@@ -670,6 +670,10 @@
                 <label for="receiverName">받는 분 이름 <span class="req">필수</span></label>
                 <input type="text" id="receiverName" placeholder="예: 이서연" oninput="recalc()">
               </div>
+              <div class="field">
+                <label for="receiverPhone">받는 분 전화 <span class="req">필수</span></label>
+                <input type="tel" id="receiverPhone" placeholder="010-1234-5678" oninput="recalc()">
+              </div>
             </div>
 
             <!-- STEP 2: 물품명 -->
@@ -751,8 +755,10 @@
             <div class="btn-row">
               <button type="button" class="nav-btn prev" id="prevBtn" onclick="goToStep(currentStep-1)">이전</button>
               <button type="button" class="nav-btn" id="nextBtn" onclick="goToStep(currentStep+1)">다음</button>
-              <button type="button" class="submit-btn" id="submitBtn" onclick="submitShipment()" hidden disabled>접수
-                완료</button>
+              <div id="submitBtnGroup" style="display:flex; gap:8px;">
+                <button type="button" class="submit-btn" id="submitBtn" onclick="submitShipment()" hidden disabled>다음 접수 <span id="pendingCount" style="font-size:11px; opacity:.8;"></span></button>
+                <button type="button" class="submit-btn" id="completeBtn" onclick="completeAllShipments()" hidden style="background:var(--brand);">완료</button>
+              </div>
             </div>
           </section>
 
@@ -792,6 +798,7 @@
                 <th>지점</th>
                 <th>보내는분</th>
                 <th>받는분</th>
+                <th>전화</th>
                 <th>도착지역</th>
                 <th>권역</th>
                 <th>물품</th>
@@ -958,7 +965,7 @@
     // ============================================================
     // 선택 상태 (버튼 칩으로 고르는 값들은 hidden input 대신 state로 관리)
     // ============================================================
-    const state = { branch: '', itemName: '', receiverArea: '' };
+    const state = { branch: '', itemName: '', receiverArea: '', pendingShipments: [] };
 
     // ---------- 최상단 탭 (접수하기 / 접수 목록) ----------
     function setMainTab(which) {
@@ -1204,6 +1211,7 @@
     function renderSummary() {
       const senderName = document.getElementById('senderName').value.trim();
       const receiverName = document.getElementById('receiverName').value.trim();
+      const receiverPhone = document.getElementById('receiverPhone').value.trim();
       const weight = getNumeric('weightKg');
       const width = getNumeric('widthCm');
       const height = getNumeric('heightCm');
@@ -1212,6 +1220,7 @@
         ['접수 지점', state.branch || '(미선택)'],
         ['보내는 분', senderName || '(미입력)'],
         ['받는 분', receiverName || '(미입력)'],
+        ['받는 분 전화', receiverPhone || '(미입력)'],
         ['물품명', state.itemName || '(미선택)'],
         ['치수(가로x세로x높이)', (width && height && depth) ? `${width} x ${height} x ${depth} cm` : '(미입력)'],
         ['실제 무게', weight ? `${weight} kg` : '(미입력)'],
@@ -1226,6 +1235,7 @@
       const errors = [];
       const senderName = document.getElementById('senderName').value.trim();
       const receiverName = document.getElementById('receiverName').value.trim();
+      const receiverPhone = document.getElementById('receiverPhone').value.trim();
       const weight = getNumeric('weightKg');
       const width = getNumeric('widthCm');
       const height = getNumeric('heightCm');
@@ -1234,6 +1244,8 @@
       if (!state.branch) errors.push('접수 지점을 선택하세요.');
       if (!senderName) errors.push('보내는 분 이름을 입력하세요.');
       if (!receiverName) errors.push('받는 분 이름을 입력하세요.');
+      if (!receiverPhone) errors.push('받는 분 전화를 입력하세요.');
+      if (receiverPhone && !/^[\d\-]+$/.test(receiverPhone)) errors.push('받는 분 전화를 올바른 형식으로 입력하세요. (예: 010-1234-5678)');
       if (!state.receiverArea) errors.push('도착 지역을 선택하세요.');
       if (!state.itemName) errors.push('물품명을 선택하거나 입력하세요.');
       if (weight === null) errors.push('실제 무게를 0보다 큰 숫자로 입력하세요.');
@@ -1315,7 +1327,7 @@
       }
       body.innerHTML = savedShipments.map(s => `
       <tr>
-        <td>${s.trackingNo}</td><td>${s.branchName}</td><td>${s.senderName}</td><td>${s.receiverName}</td>
+        <td>${s.trackingNo}</td><td>${s.branchName}</td><td>${s.senderName}</td><td>${s.receiverName}</td><td>${s.receiverPhone || '-'}</td>
         <td>${s.receiverArea}</td><td>${s.regionType}</td><td>${s.itemName}</td>
         <td>${s.billedWeightKg}kg</td><td>${s.sizeGrade}</td><td>${formatWon(s.price)}</td><td>${s.etaDate}</td>
       </tr>`).join('');
@@ -1327,7 +1339,8 @@
         <div class="receipt-title">접수가 완료됐습니다</div>
         <div class="receipt-tno">운송장번호 ${record.trackingNo}</div>
         <div class="receipt-line">접수 지점 ${record.branchName} / 보내는 분 ${record.senderName}</div>
-        <div class="receipt-line">받는 분 ${record.receiverName} / 도착 지역 ${record.receiverArea}(${record.regionType})</div>
+        <div class="receipt-line">받는 분 ${record.receiverName} (${record.receiverPhone})</div>
+        <div class="receipt-line">도착 지역 ${record.receiverArea}(${record.regionType})</div>
         <div class="receipt-line">물품 ${record.itemName} / 요금 무게 ${record.billedWeightKg}kg / 등급 ${record.sizeGrade}</div>
         <div class="receipt-price">${formatWon(record.price)}</div>
         <div class="receipt-line">도착 예정일 ${record.etaDate}</div>
@@ -1342,6 +1355,7 @@
       const branchCode = branchCodeOf(branchName);
       const senderName = document.getElementById('senderName').value.trim();
       const receiverName = document.getElementById('receiverName').value.trim();
+      const receiverPhone = document.getElementById('receiverPhone').value.trim();
       const area = state.receiverArea;
       const itemName = state.itemName;
       const weight = getNumeric('weightKg');
@@ -1360,7 +1374,7 @@
       const trackingNo = nextTrackingNo(branchCode);
 
       const record = {
-        trackingNo, branchName, senderName, receiverName,
+        trackingNo, branchName, senderName, receiverName, receiverPhone,
         receiverArea: area, regionType: region, itemName,
         weightKg: weight, widthCm: width, heightCm: height, depthCm: depth,
         billedWeightKg: Math.round(billedWeightKg * 10) / 10,
@@ -1370,21 +1384,45 @@
       // ---- Supabase 연동 자리 (키를 넣지 않는다) ----
       // const { data, error } = await supabaseClient.from('shipments').insert([{ ... }]);
 
-      savedShipments.push(record);
-      renderList();
+      state.pendingShipments.push(record);
       showReceipt(record);
       resetForm();
-      setMainTab('list');
+      updatePendingCount();
+      goToStep(0);
     }
 
     function resetForm() {
-      ['senderName', 'receiverName', 'itemName', 'weightKg', 'widthCm', 'heightCm', 'depthCm']
+      ['senderName', 'receiverName', 'receiverPhone', 'itemName', 'weightKg', 'widthCm', 'heightCm', 'depthCm']
         .forEach(id => { const e = document.getElementById(id); if (e) e.value = ''; });
       state.branch = ''; state.itemName = ''; state.receiverArea = '';
       document.getElementById('itemCustomField').hidden = true;
       const sc = document.getElementById('staffConfirm'); if (sc) sc.checked = false;
       document.getElementById('softConfirmBox').hidden = true;
       renderBranchChips(); renderItemChips(); renderAreaChips();
+    }
+
+    function updatePendingCount() {
+      const count = state.pendingShipments.length;
+      const countEl = document.getElementById('pendingCount');
+      const completeBtn = document.getElementById('completeBtn');
+      countEl.textContent = count > 0 ? `(${count}건 대기중)` : '';
+      completeBtn.hidden = count === 0;
+    }
+
+    function completeAllShipments() {
+      const count = state.pendingShipments.length;
+      if (count === 0) {
+        alert('저장할 접수가 없습니다.');
+        return;
+      }
+      if (!confirm(`총 ${count}건의 접수를 저장하시겠습니까?`)) return;
+
+      state.pendingShipments.forEach(record => savedShipments.push(record));
+      saveShipments();
+      state.pendingShipments = [];
+      updatePendingCount();
+      resetForm();
+      renderList();
       goToStep(0);
     }
 
@@ -1397,6 +1435,7 @@
     renderSizePresetChips();
     renderAreaChips();
     renderList();
+    updatePendingCount();
     goToStep(0);
   </script>
 </body>
