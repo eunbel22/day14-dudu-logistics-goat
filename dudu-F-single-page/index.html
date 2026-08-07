@@ -66,8 +66,8 @@
     .topbar {
       background: var(--brand);
       color: #fff;
-      padding: 16px 22px;
-      border-radius: 14px 14px 0 0;
+      padding: 20px 24px;
+      border-radius: 18px 18px 0 0;
       display: flex;
       justify-content: space-between;
       align-items: flex-end;
@@ -76,21 +76,21 @@
     }
 
     .topbar .brand {
-      font-size: 22px;
+      font-size: 26px;
       font-weight: 800;
       letter-spacing: 1px;
     }
 
     .topbar .sub {
-      font-size: 12px;
+      font-size: 13px;
       opacity: .85;
       margin-top: 4px;
     }
 
     .kbd-hint {
-      font-size: 11.5px;
+      font-size: 12px;
       background: rgba(255, 255, 255, .14);
-      padding: 6px 10px;
+      padding: 7px 12px;
       border-radius: 8px;
     }
 
@@ -109,14 +109,14 @@
 
     .main-tab-btn {
       flex: 1;
-      padding: 12px;
+      padding: 16px;
       border: none;
       background: transparent;
       color: rgba(255, 255, 255, .65);
-      font-size: 14px;
+      font-size: 16px;
       font-weight: 700;
       cursor: pointer;
-      border-bottom: 3px solid transparent;
+      border-bottom: 4px solid transparent;
     }
 
     .main-tab-btn.active {
@@ -129,104 +129,137 @@
       background: var(--card);
       border: 1px solid var(--border);
       border-top: none;
-      border-radius: 0 0 14px 14px;
+      border-radius: 0 0 18px 18px;
       overflow: hidden;
     }
 
-    /* ---------- 단계 탭 (스텝퍼) ---------- */
+    /* ---------- 단계 진행바 (큰 원형 스텝퍼 - 편의점 키오스크 진행바 참고) ---------- */
     .step-tabs {
       display: flex;
       overflow-x: auto;
       border-bottom: 1px solid var(--border);
       background: #f7f9fb;
+      padding: 14px 10px;
+      gap: 2px;
     }
 
     .step-tab {
       flex: 1;
-      min-width: 92px;
-      padding: 10px 6px;
+      min-width: 78px;
+      padding: 6px 4px;
       text-align: center;
       border: none;
       background: transparent;
       cursor: pointer;
-      font-size: 12px;
+      font-size: 12.5px;
       color: var(--muted);
-      border-bottom: 3px solid transparent;
       white-space: nowrap;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
     }
 
     .step-tab .num {
-      display: inline-block;
-      width: 18px;
-      height: 18px;
-      line-height: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 34px;
+      height: 34px;
       border-radius: 50%;
-      background: var(--border);
-      color: #fff;
-      font-size: 10.5px;
+      background: #fff;
+      border: 2px solid var(--border);
+      color: var(--muted);
+      font-size: 14px;
       font-weight: 800;
-      margin-right: 4px;
     }
 
     .step-tab.active {
       color: var(--brand-dark);
       font-weight: 800;
-      border-bottom-color: var(--brand);
-      background: #fff;
     }
 
     .step-tab.active .num {
       background: var(--brand);
+      border-color: var(--brand);
+      color: #fff;
     }
 
     .step-tab.done .num {
       background: #4c9a63;
+      border-color: #4c9a63;
+      color: #fff;
     }
 
     .step-tab.done {
       color: #3a7a4c;
     }
 
+    /* 단계마다 계산 패널이 항상 붙어 있으면 화면이 늘 꽉 차 보인다.
+     기본은 입력 화면 하나만 꽉 차게 보여주고(한 화면 = 질문 하나),
+     계산 결과는 확인 단계(마지막)에서만 두 칸으로 펼친다. */
     .layout {
       display: grid;
-      grid-template-columns: 1.1fr 1fr;
+      grid-template-columns: 1fr;
       gap: 0;
       align-items: start;
     }
 
+    .layout.show-calc {
+      grid-template-columns: 1.05fr 1fr;
+    }
+
     @media (max-width: 900px) {
-      .layout {
+      .layout.show-calc {
         grid-template-columns: 1fr;
       }
     }
 
     .form-panel {
-      padding: 22px;
+      padding: 32px 28px 24px;
+      border-right: none;
+      min-height: 420px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .layout.show-calc .form-panel {
       border-right: 1px solid var(--border);
-      min-height: 360px;
     }
 
     .calc-panel {
-      padding: 22px;
+      display: none;
+      padding: 28px;
       background: var(--calc-bg);
     }
 
+    .layout.show-calc .calc-panel {
+      display: block;
+    }
+
     @media (max-width: 900px) {
-      .form-panel {
+      .layout.show-calc .form-panel {
         border-right: none;
         border-bottom: 1px solid var(--border);
       }
     }
 
+    .step-icon {
+      font-size: 40px;
+      line-height: 1;
+      margin-bottom: 10px;
+    }
+
     h2 {
-      font-size: 16px;
-      margin: 0 0 4px;
+      font-size: 20px;
+      margin: 0 0 6px;
     }
 
     .step-desc {
-      font-size: 12px;
+      font-size: 13.5px;
       color: var(--muted);
-      margin: 0 0 16px;
+      margin: 0 0 20px;
+      line-height: 1.5;
     }
 
     h3 {
@@ -235,20 +268,20 @@
       margin: 18px 0 8px;
     }
 
-    /* ---------- 버튼 칩 (지점 / 도착지역 / 물품명 / 규격 프리셋) ---------- */
+    /* ---------- 버튼 칩 (지점 / 도착지역 / 물품명 / 규격 프리셋) - 터치 목표를 크게 ---------- */
     .chip-grid {
       display: flex;
       flex-wrap: wrap;
-      gap: 8px;
+      gap: 10px;
     }
 
     .chip {
-      padding: 11px 16px;
-      border: 1.5px solid var(--border);
-      border-radius: 10px;
+      padding: 16px 22px;
+      border: 2px solid var(--border);
+      border-radius: 12px;
       background: #fff;
-      font-size: 14px;
-      font-weight: 600;
+      font-size: 16px;
+      font-weight: 700;
       color: var(--text);
       cursor: pointer;
       text-align: center;
@@ -265,8 +298,8 @@
     }
 
     .chip.chip-sm {
-      padding: 8px 12px;
-      font-size: 12.5px;
+      padding: 12px 16px;
+      font-size: 13.5px;
       font-weight: 600;
     }
 
@@ -278,10 +311,10 @@
     }
 
     .chip-group-label {
-      font-size: 12px;
+      font-size: 12.5px;
       color: var(--muted);
       font-weight: 700;
-      margin: 14px 0 6px;
+      margin: 18px 0 8px;
     }
 
     .chip-group-label:first-child {
@@ -289,32 +322,40 @@
     }
 
     .field {
-      margin-top: 14px;
+      margin-top: 18px;
     }
 
     .field label {
       display: block;
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--muted);
-      margin: 0 0 6px;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+      margin: 0 0 8px;
     }
 
     .req {
       color: var(--bad-text);
       font-weight: 700;
-      font-size: 11px;
+      font-size: 11.5px;
     }
 
     input[type="text"],
-    input[type="number"] {
+    input[type="number"],
+    select {
       width: 100%;
-      padding: 11px 12px;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      font-size: 15px;
+      padding: 14px 14px;
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      font-size: 17px;
       background: #fff;
       font-family: inherit;
+    }
+
+    input[type="text"]:focus,
+    input[type="number"]:focus,
+    select:focus {
+      border-color: var(--brand);
+      outline: none;
     }
 
     .row2 {
@@ -326,7 +367,7 @@
     .row4 {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 8px;
+      gap: 10px;
     }
 
     @media (max-width: 520px) {
@@ -336,31 +377,32 @@
     }
 
     .dim-label {
-      font-size: 11px;
+      font-size: 12px;
       color: var(--muted);
-      margin-bottom: 3px;
+      margin-bottom: 4px;
+      font-weight: 600;
     }
 
     .custom-toggle {
-      font-size: 12px;
+      font-size: 13px;
       color: var(--brand);
       background: none;
       border: none;
       text-decoration: underline;
       cursor: pointer;
-      padding: 6px 0;
+      padding: 8px 0;
     }
 
     .inline-warning {
       min-height: 18px;
       margin-top: 10px;
-      font-size: 12.5px;
+      font-size: 13px;
     }
 
     .badge {
       display: inline-block;
-      padding: 5px 9px;
-      border-radius: 6px;
+      padding: 7px 12px;
+      border-radius: 8px;
     }
 
     .badge.bad {
@@ -379,9 +421,9 @@
       margin-top: 10px;
       background: var(--warn-bg);
       border: 1px solid var(--warn-border);
-      border-radius: 8px;
-      padding: 10px 12px;
-      font-size: 12.5px;
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-size: 13px;
       color: var(--warn-text);
     }
 
@@ -389,23 +431,63 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      margin-top: 8px;
+      margin-top: 10px;
       font-weight: 700;
       color: var(--text);
     }
 
+    /* 크기/무게・도착지역 단계에서 옆에 계산패널 없이도 바로 감이 오게
+     보여주는 요약 배지 (편의점 저울 화면의 "요금 미리보기"를 참고) */
+    .mini-preview {
+      display: none;
+      margin-top: 20px;
+      padding: 16px 18px;
+      background: var(--calc-bg);
+      border: 1.5px solid var(--calc-border);
+      border-radius: 12px;
+    }
+
+    .mini-preview.show {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 18px;
+      align-items: center;
+    }
+
+    .mini-preview .mp-item {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .mini-preview .mp-item b {
+      display: block;
+      font-size: 17px;
+      color: var(--brand-dark);
+      margin-top: 2px;
+    }
+
+    .mini-preview.reject {
+      background: var(--bad-bg);
+      border-color: var(--bad-border);
+    }
+
+    .mini-preview.reject .mp-item,
+    .mini-preview.reject .mp-item b {
+      color: var(--bad-text);
+    }
+
     .summary-box {
       border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 14px 16px;
+      border-radius: 12px;
+      padding: 16px 18px;
       background: #fafbfc;
     }
 
     .summary-row {
       display: flex;
       justify-content: space-between;
-      font-size: 13.5px;
-      padding: 6px 0;
+      font-size: 14.5px;
+      padding: 8px 0;
       border-bottom: 1px dashed var(--border);
     }
 
@@ -432,7 +514,7 @@
     }
 
     .error-title {
-      font-size: 12.5px;
+      font-size: 13px;
       font-weight: 700;
       color: var(--bad-text);
       margin-bottom: 4px;
@@ -441,34 +523,39 @@
     .error-box ul {
       margin: 0;
       padding-left: 18px;
-      font-size: 12.5px;
+      font-size: 13px;
       color: var(--bad-text);
-      line-height: 1.6;
+      line-height: 1.7;
     }
 
     .btn-row {
       display: flex;
-      gap: 10px;
-      margin-top: 18px;
+      gap: 12px;
+      margin-top: auto;
+      padding-top: 24px;
+      position: sticky;
+      bottom: 0;
+      background: #fff;
     }
 
     .nav-btn,
     .submit-btn {
       flex: 1;
-      padding: 14px;
-      font-size: 15px;
+      padding: 18px;
+      font-size: 17px;
       font-weight: 800;
       color: #fff;
       background: var(--brand);
       border: none;
-      border-radius: 10px;
+      border-radius: 12px;
       cursor: pointer;
     }
 
     .nav-btn.prev {
       background: #fff;
       color: var(--text);
-      border: 1px solid var(--border);
+      border: 2px solid var(--border);
+      flex: 0.6;
     }
 
     .nav-btn:disabled,
@@ -648,11 +735,12 @@
       <div id="mainPanelReceive">
         <div class="step-tabs" id="stepTabs"></div>
 
-        <div class="layout">
+        <div class="layout" id="mainLayout">
           <section class="form-panel">
 
             <!-- STEP 0: 접수 지점 -->
             <div class="step-page" data-step="0">
+              <div class="step-icon">🏢</div>
               <h2>1. 접수 지점을 선택하세요</h2>
               <p class="step-desc">운송장 앞 2자리 지점 코드에 쓰입니다 (규정 §9).</p>
               <div class="chip-grid" id="branchChips"></div>
@@ -660,6 +748,7 @@
 
             <!-- STEP 1: 보내는분 / 받는분 -->
             <div class="step-page" data-step="1" hidden>
+              <div class="step-icon">✍️</div>
               <h2>2. 보내는 분 / 받는 분</h2>
               <p class="step-desc">이름은 목록이 없어 직접 입력해야 합니다.</p>
               <div class="field">
@@ -674,6 +763,7 @@
 
             <!-- STEP 2: 물품명 -->
             <div class="step-page" data-step="2" hidden>
+              <div class="step-icon">📦</div>
               <h2>3. 물품명을 선택하세요</h2>
               <p class="step-desc">자주 접수되는 품목입니다. 목록에 없으면 직접 입력을 누르세요.</p>
               <div class="chip-group-label">자주 쓰는 물품</div>
@@ -693,6 +783,7 @@
 
             <!-- STEP 3: 크기 / 무게 -->
             <div class="step-page" data-step="3" hidden>
+              <div class="step-icon">⚖️</div>
               <h2>4. 크기와 무게</h2>
               <p class="step-desc">아래 프리셋을 누르면 값이 자동으로 채워집니다. 직접 조정해도 됩니다.</p>
               <div class="chip-group-label">규격 프리셋 (등급 기준 중간값)</div>
@@ -721,10 +812,12 @@
               <p class="step-desc" style="margin-top:8px;">한 변당 최대 200cm, 무게 최대 30kg까지만 접수됩니다. 넘으면 대형화물 전문 창구로 안내됩니다.
               </p>
               <div class="inline-warning" id="dimsWarning"></div>
+              <div class="mini-preview" id="miniPreviewSize"></div>
             </div>
 
             <!-- STEP 4: 도착 지역 -->
             <div class="step-page" data-step="4" hidden>
+              <div class="step-icon">📍</div>
               <h2>5. 도착 지역을 선택하세요</h2>
               <p class="step-desc">제주는 제주 권역, 5개 도서는 도서산간, 나머지는 전부 일반입니다 (거제·진주 포함).</p>
               <div class="chip-group-label">일반 권역</div>
@@ -738,10 +831,12 @@
                 <select id="areaSelect" onchange="onAreaSelectChange()"></select>
                 <p class="step-desc" style="margin-top:6px;">표기 갈림(서울/서울시/SEOUL 등)을 막기 위해 직접 타이핑은 받지 않습니다.</p>
               </div>
+              <div class="mini-preview" id="miniPreviewArea"></div>
             </div>
 
             <!-- STEP 5: 확인 -->
             <div class="step-page" data-step="5" hidden>
+              <div class="step-icon">✅</div>
               <h2>6. 입력 내용 확인</h2>
               <p class="step-desc">오른쪽 계산 과정을 확인하고 접수를 완료하세요.</p>
               <div class="summary-box" id="summaryBox"></div>
@@ -815,11 +910,21 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
+    // ============================================================
     // Supabase 초기화
-    const supabaseUrl = process.env.SUPABASE_URL || '';
-    const supabaseKey = process.env.SUPABASE_ANON_KEY || '';
-    const supabaseClient = supabaseUrl && supabaseKey
-      ? window.supabase.createClient(supabaseUrl, supabaseKey)
+    //
+    // 여기에 실제 Project URL / anon public key를 문자열로 직접 넣는다.
+    // (process.env는 브라우저에서 동작하지 않는다 - Node 전용이라 그대로
+    // 두면 이 스크립트 전체가 첫 줄에서 에러로 죽는다)
+    // anon key는 원래 클라이언트에 노출되는 게 정상 설계다(RLS로 막는 값).
+    // 비워두면 Supabase 없이 이 브라우저 세션 안에서만 동작하는
+    // 로컬 폴백 모드로 자동 전환된다.
+    // ============================================================
+    const SUPABASE_URL = '';       // 예: 'https://xxxxxxxx.supabase.co'
+    const SUPABASE_ANON_KEY = '';  // 예: 'eyJhbGciOi...'
+
+    const supabaseClient = (SUPABASE_URL && SUPABASE_ANON_KEY)
+      ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
       : null;
 
     // ============================================================
@@ -1006,6 +1111,9 @@
       const isLast = currentStep === STEPS.length - 1;
       document.getElementById('nextBtn').hidden = isLast;
       document.getElementById('submitBtn').hidden = !isLast;
+      // 계산 패널은 확인 단계에서만 옆에 펼친다 - 그 전 단계는 입력
+      // 화면 하나만 꽉 차게 보여줘서 화면이 늘 붐비는 느낌을 줄인다.
+      document.getElementById('mainLayout').classList.toggle('show-calc', isLast);
       if (isLast) renderSummary();
       recalc();
     }
@@ -1305,132 +1413,188 @@
       } else {
         renderCalcSteps(weight, width, height, depth, state.receiverArea);
       }
+      renderMiniPreviews(weight, width, height, depth, state.receiverArea, ban);
       if (currentStep === STEPS.length - 1) renderSummary();
       updateSubmitState();
     }
 
+    // 크기/무게, 도착지역 단계는 옆에 계산패널이 없으므로(확인 단계에서만
+    // 펼침) 여기서는 결과를 한 줄 배지로만 보여준다 - 편의점 택배 저울
+    // 화면의 "요금 미리보기" 방식 참고.
+    function renderMiniPreviews(weight, width, height, depth, area, ban) {
+      const sizeBox = document.getElementById('miniPreviewSize');
+      const areaBox = document.getElementById('miniPreviewArea');
+      if (!sizeBox || !areaBox) return;
+
+      const dimsReady = ban.hardHits.length === 0 && weight !== null && width !== null && height !== null && depth !== null;
+      if (!dimsReady) {
+        sizeBox.className = 'mini-preview';
+        sizeBox.innerHTML = '';
+        areaBox.className = 'mini-preview';
+        areaBox.innerHTML = '';
+        return;
+      }
+
+      const volumeWeightKg = (width * height * depth) / 6000;
+      const billedWeightKg = Math.max(weight, volumeWeightKg);
+      const sumCm = width + height + depth;
+      const grade = determineGrade(sumCm, billedWeightKg);
+
+      if (!grade) {
+        sizeBox.className = 'mini-preview show reject';
+        sizeBox.innerHTML = `<div class="mp-item">이 크기・무게로는<b>접수할 수 없어요</b></div><div class="mp-item">청구 무게<b>${billedWeightKg.toFixed(1)}kg</b></div>`;
+        areaBox.className = 'mini-preview';
+        areaBox.innerHTML = '';
+        return;
+      }
+
+      sizeBox.className = 'mini-preview show';
+      sizeBox.innerHTML = `<div class="mp-item">청구 무게<b>${billedWeightKg.toFixed(1)}kg</b></div><div class="mp-item">크기 등급<b>${grade}</b></div>`;
+
+      if (!area) {
+        areaBox.className = 'mini-preview';
+        areaBox.innerHTML = '';
+        return;
+      }
+
+      const region = determineRegion(area);
+      const tier = RATE_TABLE.find(t => t.grade === grade);
+      const price = tier.price[region];
+      const etaInfo = addBusinessDaysTrace(new Date(), ETA_BUSINESS_DAYS[region]);
+      areaBox.className = 'mini-preview show';
+      areaBox.innerHTML = `<div class="mp-item">권역<b>${region}</b></div><div class="mp-item">예상 요금<b>${formatWon(price)}</b></div><div class="mp-item">도착 예정<b>${formatDateISO(etaInfo.finalDate)}</b></div>`;
+    }
+
     // ============================================================
     // 접수 완료 - 운송장 발급 + 목록 반영 + 영수증
+    //
+    // 원칙(지난 대화 참고) - "원재료 값"(무게・치수・도착지역 등)만
+    // 서버로 보내고, "계산해서 나온 값"(등급・요금・권역・도착예정일・
+    // 운송장번호)은 절대 클라이언트가 만들어 보내지 않는다. DB 트리거가
+    // 다시 계산한 걸 .select()로 돌려받아서 화면에 쓴다. Supabase가
+    // 설정 안 돼 있으면(데모/오프라인 상황) 로컬 계산으로 대체하되,
+    // 이 경우 실제 저장은 안 되고 이 브라우저 세션에서만 유지된다.
     // ============================================================
+    const localFallbackShipments = [];
+
+    // 로컬 폴백 모드에서 서버 트리거와 동일한 모양(snake_case)으로
+    // 계산 결과를 만든다 - DB에 연결됐을 때와 화면 코드가 똑같이 동작하게.
+    function computeLocally(raw) {
+      const volumeWeightKg = (raw.width_cm * raw.height_cm * raw.depth_cm) / 6000;
+      const billedWeightKg = Math.max(raw.weight_kg, volumeWeightKg);
+      const sumCm = raw.width_cm + raw.height_cm + raw.depth_cm;
+      const grade = determineGrade(sumCm, billedWeightKg);
+      if (!grade) return null; // 대형 상한 초과 - DB라면 트리거가 예외를 던지는 상황
+      const region = determineRegion(raw.receiver_area);
+      const tier = RATE_TABLE.find(t => t.grade === grade);
+      const etaInfo = addBusinessDaysTrace(new Date(), ETA_BUSINESS_DAYS[region]);
+      return {
+        ...raw,
+        tracking_no: nextTrackingNo(raw.branch_code),
+        region_type: region,
+        volume_weight_kg: Math.round(volumeWeightKg * 100) / 100,
+        billed_weight_kg: Math.round(billedWeightKg * 10) / 10,
+        size_grade: grade,
+        price: tier.price[region],
+        eta_date: formatDateISO(etaInfo.finalDate),
+        accepted_at: new Date().toISOString(),
+      };
+    }
+
     async function renderList() {
       const body = document.getElementById('listBody');
       const badge = document.getElementById('listCountBadge');
 
-      if (!supabaseClient) {
-        badge.textContent = '';
-        body.innerHTML = '<tr class="empty-row"><td colspan="12">Supabase 미연결</td></tr>';
-        return;
+      let rows = localFallbackShipments;
+      if (supabaseClient) {
+        const { data, error } = await supabaseClient
+          .from('shipments')
+          .select('*')
+          .order('accepted_at', { ascending: false });
+        if (error) {
+          console.error('접수 목록 조회 실패:', error);
+          badge.textContent = '';
+          body.innerHTML = '<tr class="empty-row"><td colspan="11">목록을 불러오지 못했습니다</td></tr>';
+          return;
+        }
+        rows = data || [];
       }
 
-      const { data, error } = await supabaseClient
-        .from('shipments')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (error) {
-        console.error('조회 실패:', error);
-        badge.textContent = '';
-        body.innerHTML = '<tr class="empty-row"><td colspan="12">조회 실패</td></tr>';
+      badge.textContent = rows.length > 0 ? `(${rows.length})` : '';
+      if (rows.length === 0) {
+        body.innerHTML = '<tr class="empty-row"><td colspan="11">아직 접수 내역이 없습니다</td></tr>';
         return;
       }
-
-      const shipments = data || [];
-      badge.textContent = shipments.length > 0 ? `(${shipments.length})` : '';
-
-      if (shipments.length === 0) {
-        body.innerHTML = '<tr class="empty-row"><td colspan="12">아직 접수 내역이 없습니다</td></tr>';
-        return;
-      }
-
-      body.innerHTML = shipments.map(s => `
+      body.innerHTML = rows.map(s => `
       <tr>
         <td>${s.tracking_no}</td><td>${s.branch_name}</td><td>${s.sender_name}</td><td>${s.receiver_name}</td>
         <td>${s.receiver_area}</td><td>${s.region_type}</td><td>${s.item_name}</td>
         <td>${s.billed_weight_kg}kg</td><td>${s.size_grade}</td><td>${formatWon(s.price)}</td><td>${s.eta_date}</td>
       </tr>`).join('');
     }
+
     function showReceipt(record) {
       const el = document.getElementById('receiptSection');
       el.style.display = 'block';
-      const trackingNo = record.tracking_no || record.trackingNo;
-      const branchName = record.branch_name || record.branchName;
-      const senderName = record.sender_name || record.senderName;
-      const receiverName = record.receiver_name || record.receiverName;
-      const receiverArea = record.receiver_area || record.receiverArea;
-      const regionType = record.region_type || record.regionType;
-      const itemName = record.item_name || record.itemName;
-      const billedWeightKg = record.billed_weight_kg || record.billedWeightKg;
-      const sizeGrade = record.size_grade || record.sizeGrade;
-      const price = record.price;
-      const etaDate = record.eta_date || record.etaDate;
-
       el.innerHTML = `<div class="receipt-card">
         <div class="receipt-title">접수가 완료됐습니다</div>
-        <div class="receipt-tno">운송장번호 ${trackingNo}</div>
-        <div class="receipt-line">접수 지점 ${branchName} / 보내는 분 ${senderName}</div>
-        <div class="receipt-line">받는 분 ${receiverName} / 도착 지역 ${receiverArea}(${regionType})</div>
-        <div class="receipt-line">물품 ${itemName} / 요금 무게 ${billedWeightKg}kg / 등급 ${sizeGrade}</div>
-        <div class="receipt-price">${formatWon(price)}</div>
-        <div class="receipt-line">도착 예정일 ${etaDate}</div>
+        <div class="receipt-tno">운송장번호 ${record.tracking_no}</div>
+        <div class="receipt-line">접수 지점 ${record.branch_name} / 보내는 분 ${record.sender_name}</div>
+        <div class="receipt-line">받는 분 ${record.receiver_name} / 도착 지역 ${record.receiver_area}(${record.region_type})</div>
+        <div class="receipt-line">물품 ${record.item_name} / 요금 무게 ${record.billed_weight_kg}kg / 등급 ${record.size_grade}</div>
+        <div class="receipt-price">${formatWon(record.price)}</div>
+        <div class="receipt-line">도착 예정일 ${record.eta_date}</div>
       </div>`;
       el.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
+
     async function submitShipment() {
       const errors = validateAll();
       if (errors.length > 0) { updateSubmitState(); return; }
 
-      const branchName = state.branch;
-      const branchCode = branchCodeOf(branchName);
-      const senderName = document.getElementById('senderName').value.trim();
-      const receiverName = document.getElementById('receiverName').value.trim();
-      const area = state.receiverArea;
-      const itemName = state.itemName;
-      const weight = getNumeric('weightKg');
-      const width = getNumeric('widthCm');
-      const height = getNumeric('heightCm');
-      const depth = getNumeric('depthCm');
-
-      const volumeWeightKg = (width * height * depth) / 6000;
-      const billedWeightKg = Math.max(weight, volumeWeightKg);
-      const sumCm = width + height + depth;
-      const grade = determineGrade(sumCm, billedWeightKg);
-      const region = determineRegion(area);
-      const tier = RATE_TABLE.find(t => t.grade === grade);
-      const price = tier.price[region];
-      const etaInfo = addBusinessDaysTrace(new Date(), ETA_BUSINESS_DAYS[region]);
-      const trackingNo = nextTrackingNo(branchCode);
-
-      const record = {
-        tracking_no: trackingNo,
-        branch_name: branchName,
-        sender_name: senderName,
-        receiver_name: receiverName,
-        receiver_area: area,
-        region_type: region,
-        item_name: itemName,
-        weight_kg: weight,
-        width_cm: width,
-        height_cm: height,
-        depth_cm: depth,
-        billed_weight_kg: Math.round(billedWeightKg * 10) / 10,
-        size_grade: grade,
-        price: price,
-        eta_date: formatDateISO(etaInfo.finalDate),
+      // 원재료 값만 담는다 - 등급/요금/권역/도착예정일/운송장번호는
+      // 여기서 만들지 않는다 (서버가 다시 계산한다).
+      const raw = {
+        branch_code: branchCodeOf(state.branch),
+        branch_name: state.branch,
+        sender_name: document.getElementById('senderName').value.trim(),
+        receiver_name: document.getElementById('receiverName').value.trim(),
+        receiver_area: state.receiverArea,
+        item_name: state.itemName,
+        weight_kg: getNumeric('weightKg'),
+        width_cm: getNumeric('widthCm'),
+        height_cm: getNumeric('heightCm'),
+        depth_cm: getNumeric('depthCm'),
+        staff_confirmed: !!(document.getElementById('staffConfirm') && document.getElementById('staffConfirm').checked),
       };
 
+      let saved;
       if (supabaseClient) {
-        const { error } = await supabaseClient.from('shipments').insert([record]);
+        const { data, error } = await supabaseClient
+          .from('shipments')
+          .insert([raw])
+          .select()
+          .single();
         if (error) {
-          alert('저장 실패: ' + error.message);
+          // 금지 품목・대형 초과 등은 화면에서도 막지만, 최종 방어선은
+          // DB 트리거의 RAISE EXCEPTION이다 - 그 메시지를 그대로 보여준다.
+          alert('접수 실패: ' + error.message);
           return;
         }
+        saved = data;
+      } else {
+        saved = computeLocally(raw);
+        if (!saved) {
+          alert(`규격 초과로 접수할 수 없습니다. 대형화물 전문 창구 ${BULKY_DESK_PHONE}로 안내하세요.`);
+          return;
+        }
+        localFallbackShipments.unshift(saved);
       }
 
-      showReceipt(record);
+      showReceipt(saved);
       resetForm();
-      updatePendingCount();
-      goToStep(0);
-      if (supabaseClient) setTimeout(() => renderList(), 500);
+      await renderList();
+      setMainTab('list');
     }
 
     function resetForm() {
@@ -1442,11 +1606,6 @@
       document.getElementById('softConfirmBox').hidden = true;
       renderBranchChips(); renderItemChips(); renderAreaChips();
       goToStep(0);
-    }
-
-    function updatePendingCount() {
-      // Supabase 연동이므로 별도의 pending 상태가 없음
-      // 접수 후 바로 Supabase에 저장됨
     }
 
     // ============================================================
