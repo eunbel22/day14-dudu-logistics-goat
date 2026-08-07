@@ -5,3 +5,8 @@ cu택배키오스크
 4줄회고.md
 
 goat.md
+
+.env
+.env.local
+node_modules/
+.vercel

@@ -1,0 +1,6 @@
+{
+  "public": "dudu-F-single-page",
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}
