@@ -718,24 +718,24 @@
                 <label>가로 x 세로 x 높이 (cm) <span class="req">필수</span></label>
                 <div class="row4">
                   <div>
-                    <div class="dim-label">가로</div><input type="number" id="widthCm" step="any" min="0" max="200"
+                    <div class="dim-label">가로</div><input type="number" id="widthCm" step="any" min="0"
                       oninput="recalc()">
                   </div>
                   <div>
-                    <div class="dim-label">세로</div><input type="number" id="heightCm" step="any" min="0" max="200"
+                    <div class="dim-label">세로</div><input type="number" id="heightCm" step="any" min="0"
                       oninput="recalc()">
                   </div>
                   <div>
-                    <div class="dim-label">높이</div><input type="number" id="depthCm" step="any" min="0" max="200"
+                    <div class="dim-label">높이</div><input type="number" id="depthCm" step="any" min="0"
                       oninput="recalc()">
                   </div>
                   <div>
-                    <div class="dim-label">무게(kg)</div><input type="number" id="weightKg" step="any" min="0" max="30"
+                    <div class="dim-label">무게(kg)</div><input type="number" id="weightKg" step="any" min="0"
                       oninput="recalc()">
                   </div>
                 </div>
               </div>
-              <p class="step-desc" style="margin-top:8px;">한 변당 최대 200cm, 무게 최대 30kg까지만 접수됩니다. 넘으면 대형화물 전문 창구로 안내됩니다.
+              <p class="step-desc" style="margin-top:8px;">세 변의 합이 160cm 이하, 무게 25kg 이하까지 접수됩니다. 초과하면 대형화물 전문 창구(1600-5678)로 안내됩니다.
               </p>
               <div class="inline-warning" id="dimsWarning"></div>
             </div>
@@ -1296,8 +1296,6 @@
       if (!state.itemName) errors.push('물품명을 선택하거나 입력하세요.');
       if (weight === null) errors.push('실제 무게를 0보다 큰 숫자로 입력하세요.');
       if (width === null || height === null || depth === null) errors.push('가로・세로・높이를 모두 0보다 큰 숫자로 입력하세요.');
-      if (weight !== null && weight > 30) errors.push(`무게는 30kg까지만 접수됩니다(지금 ${weight}kg). 대형화물 전문 창구 ${BULKY_DESK_PHONE}로 안내하세요.`);
-      if ([width, height, depth].some(v => v !== null && v > 200)) errors.push(`한 변은 200cm까지만 접수됩니다. 대형화물 전문 창구 ${BULKY_DESK_PHONE}로 안내하세요.`);
 
       const ban = checkBanned(state.itemName);
       if (ban.hardHits.length > 0) {
@@ -1338,14 +1336,18 @@
       const depth = getNumeric('depthCm');
 
       const dimsWarningEl = document.getElementById('dimsWarning');
-      if (dimsWarningEl) {
-        const overWeight = weight !== null && weight > 30;
-        const overDim = [width, height, depth].some(v => v !== null && v > 200);
-        if (overWeight || overDim) {
-          dimsWarningEl.innerHTML = `<span class="badge bad">${overWeight ? '무게가 30kg를 넘었습니다.' : ''} ${overDim ? '한 변이 200cm를 넘었습니다.' : ''} 일반 택배로 접수할 수 없습니다 - 대형화물 전문 창구 ${BULKY_DESK_PHONE}</span>`;
+      if (dimsWarningEl && weight !== null && width !== null && height !== null && depth !== null) {
+        const sumCm = width + height + depth;
+        const billedWeightKg = Math.max(weight, (width * height * depth) / 6000);
+        const overSum = sumCm > 160;
+        const overWeight = billedWeightKg > 25;
+        if (overSum || overWeight) {
+          dimsWarningEl.innerHTML = `<span class="badge bad">${overSum ? `세변합 ${sumCm}cm를 넘었습니다.` : ''} ${overWeight ? `요금무게 ${billedWeightKg.toFixed(2)}kg를 넘었습니다.` : ''} 일반 택배로 접수할 수 없습니다 - 대형화물 전문 창구 ${BULKY_DESK_PHONE}</span>`;
         } else {
           dimsWarningEl.innerHTML = '';
         }
+      } else if (dimsWarningEl) {
+        dimsWarningEl.innerHTML = '';
       }
 
       if (ban.hardHits.length > 0) {
