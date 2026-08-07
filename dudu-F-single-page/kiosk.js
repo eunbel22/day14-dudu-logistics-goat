@@ -55,14 +55,6 @@ function goToStep(idx) {
   recalc();
 }
 
-// Tab 키 = 다음 단계, Shift+Tab = 이전 단계
-document.addEventListener('keydown', function (e) {
-  if (e.key !== 'Tab') return;
-  e.preventDefault();
-  if (e.shiftKey) goToStep(currentStep - 1);
-  else goToStep(currentStep + 1);
-});
-
 // ---------- STEP 0: 지점 칩 ----------
 function renderBranchChips() {
   const el = document.getElementById('branchChips');

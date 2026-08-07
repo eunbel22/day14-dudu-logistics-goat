@@ -1,15 +1,13 @@
 <!DOCTYPE html>
 <html lang="ko">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>두두택배 - 셀프 접수</title>
-  <meta name="description" content="두두택배 셀프 접수 키오스크 - 지점, 물품, 크기/무게, 도착지역을 버튼으로 골라 빠르게 접수하세요.">
-  <link rel="icon"
-    href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📦</text></svg>">
-  <link rel="stylesheet" href="styles.css">
-  <!--
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>두두택배 - 셀프 접수</title>
+<meta name="description" content="두두택배 셀프 접수 키오스크 - 지점, 물품, 크기/무게, 도착지역을 버튼으로 골라 빠르게 접수하세요.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📦</text></svg>">
+<link rel="stylesheet" href="styles.css">
+<!--
   두두택배 접수 - H. 파일 분리판
   =================================================
   G판(단계별 버튼식 + CU/GS25 참고 리디자인 + Supabase 연동)을 파일
@@ -28,221 +26,178 @@
   유효하므로 공유 링크가 실제로 동작하지 않는다).
 -->
 </head>
-
 <body>
-  <div class="page">
-    <div class="topbar">
-      <div>
-        <div class="brand">두두택배</div>
-        <div class="sub">셀프 접수 - 지점/도착지역/물품 클릭 선택, 나머지는 최소 입력</div>
-      </div>
-      <div class="kbd-hint"><b>Tab</b> 다음 단계 &nbsp;/&nbsp; <b>Shift+Tab</b> 이전 단계</div>
+<div class="page">
+  <div class="topbar">
+    <div>
+      <div class="brand">두두택배</div>
+      <div class="sub">셀프 접수 - 지점/도착지역/물품 클릭 선택, 나머지는 최소 입력</div>
     </div>
+  </div>
 
-    <div class="main-tabs">
-      <button type="button" class="main-tab-btn active" id="mainTabReceiveBtn"
-        onclick="setMainTab('receive')">접수하기</button>
-      <button type="button" class="main-tab-btn" id="mainTabListBtn" onclick="setMainTab('list')">접수 목록 <span
-          id="listCountBadge"></span></button>
-    </div>
+  <div class="main-tabs">
+    <button type="button" class="main-tab-btn active" id="mainTabReceiveBtn" onclick="setMainTab('receive')">접수하기</button>
+    <button type="button" class="main-tab-btn" id="mainTabListBtn" onclick="setMainTab('list')">접수 목록 <span id="listCountBadge"></span></button>
+  </div>
 
-    <div class="card-shell">
+  <div class="card-shell">
 
-      <!-- ============ 접수하기 탭 ============ -->
-      <div id="mainPanelReceive">
-        <div class="step-tabs" id="stepTabs"></div>
+    <!-- ============ 접수하기 탭 ============ -->
+    <div id="mainPanelReceive">
+      <div class="step-tabs" id="stepTabs"></div>
 
-        <div class="layout" id="mainLayout">
-          <section class="form-panel">
+      <div class="layout" id="mainLayout">
+        <section class="form-panel">
 
-            <!-- STEP 0: 접수 지점 -->
-            <div class="step-page" data-step="0">
-              <div class="step-icon">🏢</div>
-              <h2>1. 접수 지점을 선택하세요</h2>
-              <p class="step-desc">운송장 앞 2자리 지점 코드에 쓰입니다 (규정 §9).</p>
-              <div class="chip-grid" id="branchChips"></div>
-            </div>
-
-            <!-- STEP 1: 보내는분 / 받는분 -->
-            <div class="step-page" data-step="1" hidden>
-              <div class="step-icon">✍️</div>
-              <h2>2. 보내는 분 / 받는 분</h2>
-              <p class="step-desc">이름은 목록이 없어 직접 입력해야 합니다.</p>
-              <div class="field">
-                <label for="senderName">보내는 분 이름 <span class="req">필수</span></label>
-                <input type="text" id="senderName" placeholder="예: 김민준" oninput="recalc()">
-              </div>
-              <div class="field">
-                <label for="receiverName">받는 분 이름 <span class="req">필수</span></label>
-                <input type="text" id="receiverName" placeholder="예: 이서연" oninput="recalc()">
-              </div>
-            </div>
-
-            <!-- STEP 2: 물품명 -->
-            <div class="step-page" data-step="2" hidden>
-              <div class="step-icon">📦</div>
-              <h2>3. 물품명을 선택하세요</h2>
-              <p class="step-desc">자주 접수되는 품목입니다. 목록에 없으면 직접 입력을 누르세요.</p>
-              <div class="chip-group-label">자주 쓰는 물품</div>
-              <div class="chip-grid" id="itemChips"></div>
-              <button type="button" class="custom-toggle" id="itemCustomToggle" onclick="toggleItemCustom()">목록에 없어요 -
-                직접 입력</button>
-              <div class="field" id="itemCustomField" hidden>
-                <label for="itemName">물품명 직접 입력 <span class="req">필수</span></label>
-                <input type="text" id="itemName" placeholder="예: 텐트" oninput="onItemCustomInput()">
-              </div>
-              <div class="inline-warning" id="bannedWarning"></div>
-              <div class="soft-confirm" id="softConfirmBox" hidden>
-                <div id="softConfirmText"></div>
-                <label><input type="checkbox" id="staffConfirm" onchange="recalc()"> 직원이 확인했습니다 (50만원 이하)</label>
-              </div>
-            </div>
-
-            <!-- STEP 3: 크기 / 무게 -->
-            <div class="step-page" data-step="3" hidden>
-              <div class="step-icon">⚖️</div>
-              <h2>4. 크기와 무게</h2>
-              <p class="step-desc">아래 프리셋을 누르면 값이 자동으로 채워집니다. 직접 조정해도 됩니다.</p>
-              <div class="chip-group-label">규격 프리셋 (등급 기준 중간값)</div>
-              <div class="chip-grid" id="sizePresetChips"></div>
-              <div class="field">
-                <label>가로 x 세로 x 높이 (cm) <span class="req">필수</span></label>
-                <div class="row4">
-                  <div>
-                    <div class="dim-label">가로</div><input type="number" id="widthCm" step="any" min="0" max="200"
-                      oninput="recalc()">
-                  </div>
-                  <div>
-                    <div class="dim-label">세로</div><input type="number" id="heightCm" step="any" min="0" max="200"
-                      oninput="recalc()">
-                  </div>
-                  <div>
-                    <div class="dim-label">높이</div><input type="number" id="depthCm" step="any" min="0" max="200"
-                      oninput="recalc()">
-                  </div>
-                  <div>
-                    <div class="dim-label">무게(kg)</div><input type="number" id="weightKg" step="any" min="0" max="30"
-                      oninput="recalc()">
-                  </div>
-                </div>
-              </div>
-              <p class="step-desc" style="margin-top:8px;">한 변당 최대 200cm, 무게 최대 30kg까지만 접수됩니다. 넘으면 대형화물 전문 창구로 안내됩니다.
-              </p>
-              <div class="inline-warning" id="dimsWarning"></div>
-              <div class="mini-preview" id="miniPreviewSize"></div>
-            </div>
-
-            <!-- STEP 4: 도착 지역 -->
-            <div class="step-page" data-step="4" hidden>
-              <div class="step-icon">📍</div>
-              <h2>5. 도착 지역을 선택하세요</h2>
-              <p class="step-desc">제주는 제주 권역, 5개 도서는 도서산간, 나머지는 전부 일반입니다 (거제·진주 포함).</p>
-              <div class="chip-group-label">일반 권역</div>
-              <div class="chip-grid" id="areaChipsNormal"></div>
-              <div class="chip-group-label">제주 권역</div>
-              <div class="chip-grid" id="areaChipsJeju"></div>
-              <div class="chip-group-label">도서산간 권역</div>
-              <div class="chip-grid" id="areaChipsIsland"></div>
-              <div class="field">
-                <label for="areaSelect">그 외 지역 (표준 시/도 목록에서만 선택)</label>
-                <select id="areaSelect" onchange="onAreaSelectChange()"></select>
-                <p class="step-desc" style="margin-top:6px;">표기 갈림(서울/서울시/SEOUL 등)을 막기 위해 직접 타이핑은 받지 않습니다.</p>
-              </div>
-              <div class="mini-preview" id="miniPreviewArea"></div>
-            </div>
-
-            <!-- STEP 5: 확인 -->
-            <div class="step-page" data-step="5" hidden>
-              <div class="step-icon">✅</div>
-              <h2>6. 입력 내용 확인</h2>
-              <p class="step-desc">오른쪽 계산 과정을 확인하고 접수를 완료하세요.</p>
-              <div class="summary-box" id="summaryBox"></div>
-              <div class="error-box" id="errorBox"></div>
-            </div>
-
-            <div class="btn-row">
-              <button type="button" class="nav-btn prev" id="prevBtn" onclick="goToStep(currentStep-1)">이전</button>
-              <button type="button" class="nav-btn" id="nextBtn" onclick="goToStep(currentStep+1)">다음</button>
-              <button type="button" class="submit-btn" id="submitBtn" onclick="submitShipment()" hidden disabled>접수
-                완료</button>
-            </div>
-          </section>
-
-          <section class="calc-panel">
-            <h3 style="margin-top:0;">요금표 - 4등급 x 3권역 12종 전부 (규정 §3)</h3>
-            <table class="rate-table" id="rateTable">
-              <thead>
-                <tr>
-                  <th>등급</th>
-                  <th>기준(세변합 / 무게)</th>
-                  <th>일반</th>
-                  <th>제주</th>
-                  <th>도서산간</th>
-                </tr>
-              </thead>
-              <tbody></tbody>
-            </table>
-
-            <h2 style="margin-top:20px;">계산 과정 (규정 그대로, 숫자를 대입해서 보여줍니다)</h2>
-            <div id="calcSteps">
-              <div class="calc-pending">무게・가로・세로・높이를 모두 입력하면 계산 과정이 여기 순서대로 표시됩니다.</div>
-            </div>
-          </section>
-        </div>
-
-        <div class="receipt-section" id="receiptSection" style="display:none; padding: 0 22px 22px;"></div>
-      </div>
-
-      <!-- ============ 접수 목록 탭 ============ -->
-      <div id="mainPanelList" hidden>
-        <div class="list-panel">
-          <h2 style="font-size:14px;color:var(--muted);margin:0 0 8px 2px;">오늘 접수 목록</h2>
-          <p class="step-desc" style="margin:0 0 14px;">Supabase 연결 시 전체 접수 내역이 실시간으로 뜨고, 연결 전이면 이 브라우저 세션에서만 유지됩니다.</p>
-
-          <div class="tracking-search">
-            <input type="text" id="trackingSearchInput" placeholder="운송장번호로 영수증 조회 (예: 1100000001)"
-              onkeydown="if(event.key==='Enter') goToReceiptSearch()">
-            <button type="button" onclick="goToReceiptSearch()">조회</button>
+          <!-- STEP 0: 접수 지점 -->
+          <div class="step-page" data-step="0">
+            <div class="step-icon">🏢</div>
+            <h2>1. 접수 지점을 선택하세요</h2>
+            <p class="step-desc">운송장 앞 2자리 지점 코드에 쓰입니다 (규정 §9).</p>
+            <div class="chip-grid" id="branchChips"></div>
           </div>
 
-          <table>
-            <thead>
-              <tr>
-                <th>운송장</th>
-                <th>지점</th>
-                <th>보내는분</th>
-                <th>받는분</th>
-                <th>도착지역</th>
-                <th>권역</th>
-                <th>물품</th>
-                <th>요금무게</th>
-                <th>등급</th>
-                <th>요금</th>
-                <th>도착예정</th>
-              </tr>
-            </thead>
-            <tbody id="listBody">
-              <tr class="empty-row">
-                <td colspan="11">아직 접수 내역이 없습니다</td>
-              </tr>
-            </tbody>
+          <!-- STEP 1: 보내는분 / 받는분 -->
+          <div class="step-page" data-step="1" hidden>
+            <div class="step-icon">✍️</div>
+            <h2>2. 보내는 분 / 받는 분</h2>
+            <p class="step-desc">이름은 목록이 없어 직접 입력해야 합니다.</p>
+            <div class="field">
+              <label for="senderName">보내는 분 이름 <span class="req">필수</span></label>
+              <input type="text" id="senderName" placeholder="예: 김민준" oninput="recalc()">
+            </div>
+            <div class="field">
+              <label for="receiverName">받는 분 이름 <span class="req">필수</span></label>
+              <input type="text" id="receiverName" placeholder="예: 이서연" oninput="recalc()">
+            </div>
+          </div>
+
+          <!-- STEP 2: 물품명 -->
+          <div class="step-page" data-step="2" hidden>
+            <div class="step-icon">📦</div>
+            <h2>3. 물품명을 선택하세요</h2>
+            <p class="step-desc">자주 접수되는 품목입니다. 목록에 없으면 직접 입력을 누르세요.</p>
+            <div class="chip-group-label">자주 쓰는 물품</div>
+            <div class="chip-grid" id="itemChips"></div>
+            <button type="button" class="custom-toggle" id="itemCustomToggle" onclick="toggleItemCustom()">목록에 없어요 - 직접 입력</button>
+            <div class="field" id="itemCustomField" hidden>
+              <label for="itemName">물품명 직접 입력 <span class="req">필수</span></label>
+              <input type="text" id="itemName" placeholder="예: 텐트" oninput="onItemCustomInput()">
+            </div>
+            <div class="inline-warning" id="bannedWarning"></div>
+            <div class="soft-confirm" id="softConfirmBox" hidden>
+              <div id="softConfirmText"></div>
+              <label><input type="checkbox" id="staffConfirm" onchange="recalc()"> 직원이 확인했습니다 (50만원 이하)</label>
+            </div>
+          </div>
+
+          <!-- STEP 3: 크기 / 무게 -->
+          <div class="step-page" data-step="3" hidden>
+            <div class="step-icon">⚖️</div>
+            <h2>4. 크기와 무게</h2>
+            <p class="step-desc">아래 프리셋을 누르면 값이 자동으로 채워집니다. 직접 조정해도 됩니다.</p>
+            <div class="chip-group-label">규격 프리셋 (등급 기준 중간값)</div>
+            <div class="chip-grid" id="sizePresetChips"></div>
+            <div class="field">
+              <label>가로 x 세로 x 높이 (cm) <span class="req">필수</span></label>
+              <div class="row4">
+                <div><div class="dim-label">가로</div><input type="number" id="widthCm" step="any" min="0" max="200" oninput="recalc()"></div>
+                <div><div class="dim-label">세로</div><input type="number" id="heightCm" step="any" min="0" max="200" oninput="recalc()"></div>
+                <div><div class="dim-label">높이</div><input type="number" id="depthCm" step="any" min="0" max="200" oninput="recalc()"></div>
+                <div><div class="dim-label">무게(kg)</div><input type="number" id="weightKg" step="any" min="0" max="30" oninput="recalc()"></div>
+              </div>
+            </div>
+            <p class="step-desc" style="margin-top:8px;">한 변당 최대 200cm, 무게 최대 30kg까지만 접수됩니다. 넘으면 대형화물 전문 창구로 안내됩니다.</p>
+            <div class="inline-warning" id="dimsWarning"></div>
+            <div class="mini-preview" id="miniPreviewSize"></div>
+          </div>
+
+          <!-- STEP 4: 도착 지역 -->
+          <div class="step-page" data-step="4" hidden>
+            <div class="step-icon">📍</div>
+            <h2>5. 도착 지역을 선택하세요</h2>
+            <p class="step-desc">제주는 제주 권역, 5개 도서는 도서산간, 나머지는 전부 일반입니다 (거제·진주 포함).</p>
+            <div class="chip-group-label">일반 권역</div>
+            <div class="chip-grid" id="areaChipsNormal"></div>
+            <div class="chip-group-label">제주 권역</div>
+            <div class="chip-grid" id="areaChipsJeju"></div>
+            <div class="chip-group-label">도서산간 권역</div>
+            <div class="chip-grid" id="areaChipsIsland"></div>
+            <div class="field">
+              <label for="areaSelect">그 외 지역 (표준 시/도 목록에서만 선택)</label>
+              <select id="areaSelect" onchange="onAreaSelectChange()"></select>
+              <p class="step-desc" style="margin-top:6px;">표기 갈림(서울/서울시/SEOUL 등)을 막기 위해 직접 타이핑은 받지 않습니다.</p>
+            </div>
+            <div class="mini-preview" id="miniPreviewArea"></div>
+          </div>
+
+          <!-- STEP 5: 확인 -->
+          <div class="step-page" data-step="5" hidden>
+            <div class="step-icon">✅</div>
+            <h2>6. 입력 내용 확인</h2>
+            <p class="step-desc">오른쪽 계산 과정을 확인하고 접수를 완료하세요.</p>
+            <div class="summary-box" id="summaryBox"></div>
+            <div class="error-box" id="errorBox"></div>
+          </div>
+
+          <div class="btn-row">
+            <button type="button" class="nav-btn prev" id="prevBtn" onclick="goToStep(currentStep-1)">이전</button>
+            <button type="button" class="nav-btn" id="nextBtn" onclick="goToStep(currentStep+1)">다음</button>
+            <button type="button" class="submit-btn" id="submitBtn" onclick="submitShipment()" hidden disabled>접수 완료</button>
+          </div>
+        </section>
+
+        <section class="calc-panel">
+          <h3 style="margin-top:0;">요금표 - 4등급 x 3권역 12종 전부 (규정 §3)</h3>
+          <table class="rate-table" id="rateTable">
+            <thead><tr><th>등급</th><th>기준(세변합 / 무게)</th><th>일반</th><th>제주</th><th>도서산간</th></tr></thead>
+            <tbody></tbody>
           </table>
-        </div>
+
+          <h2 style="margin-top:20px;">계산 과정 (규정 그대로, 숫자를 대입해서 보여줍니다)</h2>
+          <div id="calcSteps">
+            <div class="calc-pending">무게・가로・세로・높이를 모두 입력하면 계산 과정이 여기 순서대로 표시됩니다.</div>
+          </div>
+        </section>
       </div>
 
+      <div class="receipt-section" id="receiptSection" style="display:none; padding: 0 22px 22px;"></div>
     </div>
-  </div>
 
-  <div class="site-footer">
-    <div><b>두두택배</b> - 지점 접수 셀프 키오스크</div>
-    <div>고객센터 1588-1234 &nbsp;·&nbsp; 대형화물・특수 택배 전문 창구 1600-5678</div>
-    <div class="footer-links"><a href="index.html">접수하기</a><a href="#" onclick="setMainTab('list'); return false;">접수
-        목록</a></div>
-  </div>
+    <!-- ============ 접수 목록 탭 ============ -->
+    <div id="mainPanelList" hidden>
+      <div class="list-panel">
+        <h2 style="font-size:14px;color:var(--muted);margin:0 0 8px 2px;">오늘 접수 목록</h2>
+        <p class="step-desc" style="margin:0 0 14px;">Supabase 연결 시 전체 접수 내역이 실시간으로 뜨고, 연결 전이면 이 브라우저 세션에서만 유지됩니다.</p>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="common.js"></script>
-  <script src="kiosk.js"></script>
+        <div class="tracking-search">
+          <input type="text" id="trackingSearchInput" placeholder="운송장번호로 영수증 조회 (예: 1100000001)" onkeydown="if(event.key==='Enter') goToReceiptSearch()">
+          <button type="button" onclick="goToReceiptSearch()">조회</button>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th>운송장</th><th>지점</th><th>보내는분</th><th>받는분</th><th>도착지역</th>
+              <th>권역</th><th>물품</th><th>요금무게</th><th>등급</th><th>요금</th><th>도착예정</th>
+            </tr>
+          </thead>
+          <tbody id="listBody"><tr class="empty-row"><td colspan="11">아직 접수 내역이 없습니다</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="site-footer">
+  <div><b>두두택배</b> - 지점 접수 셀프 키오스크</div>
+  <div>고객센터 1588-1234 &nbsp;·&nbsp; 대형화물・특수 택배 전문 창구 1600-5678</div>
+  <div class="footer-links"><a href="index.html">접수하기</a><a href="#" onclick="setMainTab('list'); return false;">접수 목록</a></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="common.js"></script>
+<script src="kiosk.js"></script>
 </body>
-
 </html>
